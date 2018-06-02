@@ -1,5 +1,7 @@
 <?php
 
+
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
@@ -13,8 +15,8 @@ class SetupCountriesTable extends Migration {
 	public function up()
 	{
 		// Creates the users table
-		Schema::create(\Config::get('countries.table_name'), function(Blueprint $table)
-		{		    
+		Schema::create(Config::get('countries.table_name'), function(Blueprint $table)
+		{
 		    $table->integer('id')->unsigned()->index();
 		    $table->string('capital', 255)->nullable();
 		    $table->string('citizenship', 255)->nullable();
@@ -32,7 +34,7 @@ class SetupCountriesTable extends Migration {
 		    $table->boolean('eea')->default(0);
 		    $table->string('calling_code', 3)->nullable();
 		    $table->string('flag', 6)->nullable();
-		    
+
 		    $table->primary('id');
 			$table->engine = 'InnoDB';
 
@@ -47,7 +49,7 @@ class SetupCountriesTable extends Migration {
 	public function down()
 	{
         setFKCheckOff();
-		Schema::drop(\Config::get('countries.table_name'));
+		Schema::drop(Config::get('countries.table_name'));
         setFKCheckOn();
 	}
 

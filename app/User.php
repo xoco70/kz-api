@@ -2,26 +2,14 @@
 
 namespace App;
 
-use App\Exceptions\NotOwningAssociationException;
-use App\Exceptions\NotOwningClubException;
-use App\Exceptions\NotOwningFederationException;
 use App\Traits\RoleTrait;
-use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Lab404\Impersonate\Models\Impersonate;
-use Laravel\Passport\HasApiTokens;
-use OwenIt\Auditing\Contracts\Auditable;
-use Thomaswelton\LaravelGravatar\Facades\Gravatar;
 
 /**
  * @property  mixed name
@@ -37,9 +25,9 @@ use Thomaswelton\LaravelGravatar\Facades\Gravatar;
  * @property Club clubOwned
  * @property int id
  */
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract, Auditable
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, SoftDeletes, Sluggable, Notifiable, HasApiTokens, Impersonate, RoleTrait, \OwenIt\Auditing\Auditable;
+    use Authenticatable, CanResetPassword, SoftDeletes, RoleTrait;
 
     /**
      * The database table used by the model.
@@ -202,72 +190,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Get all deleted user's tournmanents
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function tournamentsDeleted()
-    {
-        return $this->hasMany('App\Tournament')->onlyTrashed();
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function championships()
     {
         return $this->belongsToMany(Championship::class, 'competitor')
             ->withTimestamps();
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function federation()
-    {
-        return $this->belongsTo(Federation::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function association()
-    {
-        return $this->belongsTo(Association::class);
-    }
-
-    /**
-     * A president of federation owns a federation
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function federationOwned()
-    {
-        return $this->belongsTo(Federation::class, 'id', 'president_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function associationOwned()
-    {
-        return $this->belongsTo(Association::class, 'id', 'president_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function clubOwned()
-    {
-        return $this->belongsTo(Club::class, 'id', 'president_id');
-    }
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function club()
-    {
-        return $this->belongsTo(Club::class);
     }
 
     /**
@@ -344,13 +272,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->isSuperAdmin();
     }
 
-    /**
-     * @return bool
-     */
-    public function canBeImpersonated()
-    {
-        return $this->isSuperAdmin();
-    }
 
 
     /**
@@ -361,62 +282,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->firstname ?? '' . " " . $this->lastname ?? '';
     }
 
-    /**
-     * @param $query
-     * @param User $user
-     * @return Builder
-     * @throws AuthorizationException
-     * @throws NotOwningAssociationException
-     * @throws NotOwningClubException
-     * @throws NotOwningFederationException
-     */
-    public function scopeForUser($query, User $user)
-    {
-        // If user manage a structure, he will be limited to see entity of this structure
-        // If user has the role but manage no structure --> AuthorizationException
-        switch (true) {
-            case $user->isSuperAdmin():
-                return $query;
-            case $user->isFederationPresident() && $user->federationOwned != null:
-                return $query->federationPresident($user);
-            case $user->isAssociationPresident() && $user->associationOwned:
-                return $query->associationPresident($user);
-            case $user->isClubPresident() && $user->clubOwned != null:
-                return $query->clubPresident($user);
-            case $user->isFederationPresident() && !$user->federationOwned != null:
-                throw new NotOwningFederationException();
-            case $user->isAssociationPresident() && !$user->associationOwned:
-                throw new NotOwningAssociationException();
-            case $user->isClubPresident() && $user->clubOwned == null:
-                throw new NotOwningClubException();
-            default:
-                throw new AuthorizationException();
-        }
-    }
-
-    public function scopeFederationPresident($query, User $user)
-    {
-        return $query->where('federation_id', '=', $user->federationOwned->id);
-    }
-
-    public function scopeAssociationPresident($query, User $user)
-    {
-        return $query->where('association_id', '=', $user->associationOwned->id);
-    }
-
-    public function scopeClubPresident($query, User $user)
-    {
-        return $query->where('club_id', '=', $user->clubOwned->id);
-    }
-
-
     public function getAvatarAttribute($avatar)
     {
-        
-        if (internet_connected() && !isset($avatar) && Gravatar::exists($this->email)) {
-            return Gravatar::src($this->email);
-
-        }
 
         if (!str_contains($avatar, 'http') && isset($avatar)) {
             return asset(config('constants.AVATAR_PATH') . $avatar);
