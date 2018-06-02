@@ -3,13 +3,8 @@
 namespace App;
 
 
-use Cocur\Slugify\Slugify;
-//use Cviebrock\EloquentSluggable\Engines\IdeographicEngine;
-//use Cviebrock\EloquentSluggable\Engines\KoreanEngine;
-use Cviebrock\EloquentSluggable\Sluggable;
-use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Contracts\Auditable;
+
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 
 
@@ -21,11 +16,9 @@ use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
  * @property mixed updated_at
  * @property mixed deleted_at
  */
-class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament implements Auditable
+class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
 {
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
-    use Sluggable;
-    use SluggableScopeHelpers;
+    use SoftDeletes;
 
     public $timestamps = true;
     protected $table = 'tournament';

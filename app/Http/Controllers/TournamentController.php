@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Country;
 use App\Exceptions\InvitationNeededException;
-use App\FightersGroup;
 use App\Grade;
-use App\Http\Requests\TournamentRequest;
-use App\Http\Requests\VenueRequest;
+use App\Http\Resources\TournamentResource;
 use App\Tournament;
-use App\TournamentLevel;
 use App\Venue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -24,25 +19,25 @@ use Illuminate\Support\Facades\URL;
 class TournamentController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Display a listing of the resource
      */
     public function index()
     {
-        dd ("ok");
-        if (Auth::user()->isSuperAdmin()) {
-            $tournaments = Tournament::with('owner')
-                ->withCount('competitors')
-                ->orderBy('updated_at', 'desc')
-                ->paginate(config('constants.PAGINATION')); // ,'uniqueTrees'
-        } else {
-            $tournaments = Auth::user()->tournaments()
-                ->with('owner')->orderBy('updated_at', 'desc')
-                ->paginate(config('constants.PAGINATION'));
-        }
-        $title = trans('core.tournaments_created');
-        return view('tournaments.index', compact('tournaments', 'title'));
+        return TournamentResource::collection(Tournament::all());
+
+
+//        if (Auth::user()->isSuperAdmin()) {
+//            $tournaments = Tournament::with('owner')
+//                ->withCount('competitors')
+//                ->orderBy('updated_at', 'desc')
+//                ->paginate(config('constants.PAGINATION')); // ,'uniqueTrees'
+//        } else {
+//            $tournaments = Auth::user()->tournaments()
+//                ->with('owner')->orderBy('updated_at', 'desc')
+//                ->paginate(config('constants.PAGINATION'));
+//        }
+//        $title = trans('core.tournaments_created');
+//        return view('tournaments.index', compact('tournaments', 'title'));
     }
 
     /**

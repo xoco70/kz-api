@@ -86,9 +86,7 @@ $app->register(Aws\Laravel\AwsServiceProvider::class);
 
 $app->register(Xoco70\LaravelTournaments\TournamentsServiceProvider::class);
 
-if (env('APP_DEBUG')) {
-    $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
-}
+$app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
 
 if ($app->environment() !== 'production') {
     $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
@@ -117,6 +115,6 @@ $app->router->group([
 });
 $app->configure('countries');
 $app->configure('constants');
-
+$app->configure('debugbar');
 
 return $app;

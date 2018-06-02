@@ -15,6 +15,7 @@ $factory->define(App\Tournament::class, function (Faker\Generator $faker) {
         'dateFin' => $dateIni,
         'registerDateLimit' => $dateIni,
         'sport' => 1,
+        'slug' => $faker->slug,
         'type' => $faker->boolean(),
         'venue_id' => $faker->randomElement($venues),
         'level_id' => $faker->randomElement($levels),

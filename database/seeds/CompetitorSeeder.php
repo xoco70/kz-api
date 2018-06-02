@@ -34,7 +34,7 @@ class CompetitorSeeder extends Seeder
                     'federation_id' => 36,
                     'association_id' => $faker->randomElement($associations),
                     'role_id' => Config::get('constants.ROLE_USER'),
-                    'password' => bcrypt('111111'),
+                    'password' => app('hash')->make('111111'),
                     'verified' => 1]);
             foreach ($users as $user) {
                 factory(Competitor::class)->create([

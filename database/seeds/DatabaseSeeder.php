@@ -29,12 +29,12 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(TournamentLevelSeeder::class);
         $this->call(CategorySeeder::class);
-//        $this->call(TournamentSeeder::class);
+        $this->call(TournamentSeeder::class);
 
         $this->call(FederationSeeder::class);
         $this->call(AssociationSeeder::class);
         $this->call(ClubSeeder::class);
-//        $this->call(CompetitorSeeder::class);
+        $this->call(CompetitorSeeder::class);
 
         $this->command->info('All tables seeded!');
         setFKCheckOn();
