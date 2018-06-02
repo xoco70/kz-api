@@ -17,6 +17,7 @@
     "sentry/sentry-laravel": "^0.9.0",
     "torann/geoip": "^1.0",
     "vlucas/phpdotenv": "~2.2",
+    "webpatser/laravel-countries": "dev-develop",
     "xoco70/laravel-tournaments": "dev-master"
   },
   "require-dev": {

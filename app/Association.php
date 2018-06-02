@@ -8,13 +8,12 @@ use Illuminate\Support\Collection;
 use OwenIt\Auditing\Contracts\Auditable;
 use stdClass;
 
-class Association extends Model implements Auditable
+class Association extends Model
 {
 
     public $timestamps = true;
     protected $table = 'association';
     protected $guarded = ['id'];
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 

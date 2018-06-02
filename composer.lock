@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "03bbd3a6dd206ff5b8c3239d0e452f4b",
+    "content-hash": "d623bc415b47648289fd8c2a02fa5232",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3277,6 +3277,58 @@
             "time": "2016-09-01T10:05:43+00:00"
         },
         {
+            "name": "webpatser/laravel-countries",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webpatser/laravel-countries.git",
+                "reference": "37916429818094068805f4ec5110842349126513"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webpatser/laravel-countries/zipball/37916429818094068805f4ec5110842349126513",
+                "reference": "37916429818094068805f4ec5110842349126513",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Webpatser\\Countries": "src/"
+                },
+                "classmap": [
+                    "src/commands"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Kempen",
+                    "email": "christoph@downsized.nl",
+                    "homepage": "http://downsized.nl/",
+                    "role": "developer"
+                },
+                {
+                    "name": "Paul Kievits",
+                    "role": "developer"
+                }
+            ],
+            "description": "Laravel Countries is a bundle for Laravel, providing Almost ISO 3166_2, 3166_3, currency, Capital and more for all countries.",
+            "homepage": "https://github.com/webpatser/laravel-countries",
+            "keywords": [
+                "countries",
+                "iso_3166_2",
+                "iso_3166_3",
+                "laravel"
+            ],
+            "time": "2018-05-16T06:37:52+00:00"
+        },
+        {
             "name": "xoco70/laravel-tournaments",
             "version": "dev-master",
             "source": {
@@ -5300,6 +5352,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "webpatser/laravel-countries": 20,
         "xoco70/laravel-tournaments": 20
     },
     "prefer-stable": true,

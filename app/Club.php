@@ -10,12 +10,11 @@ use Illuminate\Support\Collection;
 use OwenIt\Auditing\AuditingTrait;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Club extends Model implements Auditable
+class Club extends Model
 {
     public $timestamps = true;
     protected $table = 'club';
     protected $guarded = ['id'];
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 

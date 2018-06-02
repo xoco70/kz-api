@@ -3,6 +3,7 @@
 use App\Federation;
 use App\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 
 class FederationSeeder extends Seeder
 {
@@ -22,7 +23,7 @@ class FederationSeeder extends Seeder
             ['name' => 'FMK',
                 'email' => 'fmk@kendozone.com',
                 'role_id' => Config::get('constants.ROLE_FEDERATION_PRESIDENT'),
-                'password' => bcrypt('fmk'),
+                'password' => app('hash')->make('fmk'),
                 'country_id' => 484,
                 'federation_id' => 36, // FK Check unactive
                 'verified' => 1]);

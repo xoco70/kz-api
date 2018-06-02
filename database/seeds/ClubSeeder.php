@@ -27,7 +27,7 @@ class ClubSeeder extends Seeder
             ['name' => 'naucali_President',
                 'email' => 'naucali@aikem.com',
                 'role_id' => Config::get('constants.ROLE_CLUB_PRESIDENT'),
-                'password' => bcrypt('naucali'),
+                'password' => app('hash')->make('naucali'),
                 'verified' => 1,
                 'country_id' => 484,
                 'federation_id' => 36,

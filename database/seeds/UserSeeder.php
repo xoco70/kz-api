@@ -25,28 +25,28 @@ class UserSeeder extends Seeder
                 'email' => 'superuser@kendozone.dev',
                 'country_id' => 484,
                 'role_id' => Config::get('constants.ROLE_SUPERADMIN'),
-                'password' => bcrypt('superuser'),
+                'password' => app('hash')->make('superuser'),
                 'verified' => 1,]); // Root UI
         factory(User::class)->create(
             ['name' => 'federation',
                 'email' => 'federation@kendozone.dev',
                 'country_id' => $faker->randomElement($countries),
                 'role_id' => Config::get('constants.ROLE_FEDERATION_PRESIDENT'),
-                'password' => bcrypt('federation'),
+                'password' => app('hash')->make('federation'),
                 'verified' => 1,]); // Federation Random Country : Pass federation
         factory(User::class)->create(
             ['name' => 'association',
                 'email' => 'association@kendozone.dev',
                 'country_id' => $faker->randomElement($countries),
                 'role_id' => Config::get('constants.ROLE_ASSOCIATION_PRESIDENT'),
-                'password' => bcrypt('association'),
+                'password' => app('hash')->make('association'),
                 'verified' => 1,]);
 
         factory(User::class)->create(
             ['name' => 'club',
                 'email' => 'club@kendozone.dev',
                 'role_id' => Config::get('constants.ROLE_CLUB_PRESIDENT'),
-                'password' => bcrypt('club'),
+                'password' => app('hash')->make('club'),
                 'verified' => 1,]);
 
 
@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
                 'email' => 'user@kendozone.dev',
                 'country_id' => $faker->randomElement($countries),
                 'role_id' => Config::get('constants.ROLE_USER'),
-                'password' => bcrypt('user'),
+                'password' => app('hash')->make('user'),
                 'verified' => 1,]);
     }
 }

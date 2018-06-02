@@ -24,7 +24,7 @@ class AssociationSeeder extends Seeder
             ['name' => 'AIKEM_President',
                 'email' => 'aikem@kendozone.com',
                 'role_id' => Config::get('constants.ROLE_ASSOCIATION_PRESIDENT'),
-                'password' => bcrypt('aikem'),
+                'password' => app('hash')->make('aikem'),
                 'verified' => 1,
                 'country_id' => 484,
                 'federation_id' => 36,
