@@ -30,7 +30,7 @@ class TournamentController extends Controller
      */
     public function index()
     {
-
+        dd ("ok");
         if (Auth::user()->isSuperAdmin()) {
             $tournaments = Tournament::with('owner')
                 ->withCount('competitors')
