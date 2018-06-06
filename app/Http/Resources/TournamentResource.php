@@ -19,7 +19,7 @@ class TournamentResource extends JsonResource
             'id' => $this->id,
             'user' => User::find($this->id)->email,
             'date' => $this->dateIni,
-            'slug' => $this->slug,
+            'name' => $this->name,
             'numCompetitors' => $this->competitors->count()
         ];
     }

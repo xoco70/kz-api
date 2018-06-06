@@ -2,6 +2,8 @@
 
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
+
+    protected $baseUrl = 'http://localhost';
     /**
      * Creates the application.
      *
