@@ -172,7 +172,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
-        Cviebrock\EloquentSluggable\ServiceProvider::class,
+//        Cviebrock\EloquentSluggable\ServiceProvider::class,
 
 //        Proengsoft\JsValidation\JsValidationServiceProvider::class,
 //        Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,

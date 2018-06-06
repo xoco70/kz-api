@@ -16,3 +16,16 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/tournaments', 'TournamentController@index');
+
+
+$router->post('/auth/login', 'Auth\AuthController@authenticate');
+
+
+$router->group(['middleware' => 'jwt.auth'],
+    function () use ($router) {
+        $router->get('users', function () {
+            $users = \App\User::all();
+            return response()->json($users);
+        });
+    }
+);

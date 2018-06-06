@@ -60,16 +60,18 @@ $app->singleton(
 |
 */
 
- $app->middleware([
+$app->middleware([
     App\Http\Middleware\CorsMiddleware::class
- ]);
+]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+]);
+
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +89,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 $app->register(Aws\Laravel\AwsServiceProvider::class);
+$app->register(Urameshibr\Providers\FormRequestServiceProvider::class);
+
 
 $app->register(Xoco70\LaravelTournaments\TournamentsServiceProvider::class);
 

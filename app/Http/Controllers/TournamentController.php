@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InvitationNeededException;
 use App\Grade;
+use App\Http\Requests\TournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Tournament;
 use App\Venue;
@@ -23,21 +24,7 @@ class TournamentController extends Controller
      */
     public function index()
     {
-        return TournamentResource::collection(Tournament::all());
-
-
-//        if (Auth::user()->isSuperAdmin()) {
-//            $tournaments = Tournament::with('owner')
-//                ->withCount('competitors')
-//                ->orderBy('updated_at', 'desc')
-//                ->paginate(config('constants.PAGINATION')); // ,'uniqueTrees'
-//        } else {
-//            $tournaments = Auth::user()->tournaments()
-//                ->with('owner')->orderBy('updated_at', 'desc')
-//                ->paginate(config('constants.PAGINATION'));
-//        }
-//        $title = trans('core.tournaments_created');
-//        return view('tournaments.index', compact('tournaments', 'title'));
+        return TournamentResource::collection(Tournament::paginate(25));
     }
 
     /**
