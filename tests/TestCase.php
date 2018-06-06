@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
 
-    protected $baseUrl = 'http://localhost';
     protected static $applicationRefreshed = false;
     /**
      * Creates the application.
@@ -27,10 +25,8 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
     // Worth to use it when tests > 30 sec
     public static function initialize()
     {
-
+        $app = require __DIR__ . '/../bootstrap/app.php';
         if (is_null(self::$configurationApp)) {
-            $app = require __DIR__ . '/../bootstrap/app.php';
-
             $app->environment('testing');
 
             if (config('database.default') == 'sqlite') {
@@ -42,10 +38,9 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 //            Artisan::call('db:seed');
 
             self::$configurationApp = $app;
-            return $app;
         }
 
-        return self::$configurationApp;
+        return $app;
     }
 
 
