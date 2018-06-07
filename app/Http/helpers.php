@@ -91,4 +91,13 @@ function public_path($path = null)
     return rtrim(app()->basePath('public/' . $path), '/');
 }
 
+function ip()
+{
+    return isset($_SERVER['HTTP_CLIENT_IP'])
+        ? $_SERVER['HTTP_CLIENT_IP']
+        : isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+            ? $_SERVER['HTTP_X_FORWARDED_FOR']
+            : $_SERVER['REMOTE_ADDR'];
+
+}
 

@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Invite;
-
 class AuthRequest extends Request
 {
 
@@ -11,16 +9,14 @@ class AuthRequest extends Request
     {
         // Insert needed fields in request if not present
 
-        $request->request->add(['role_id' => config('constants.ROLE_USER')]);
-
-        $token = $request->get("token");
-        if (!isNullOrEmptyString($token)) {
-            $invite = Invite::getInviteFromToken($token);
-            if (!$request->has('email')) {
-                $request->request->add(['email' => $invite->email]);
-                $request->request->add(['verified' => 1]);
-            }
-        }
+//        $token = $request->get("token");
+//        if (!isNullOrEmptyString($token)) {
+//            $invite = Invite::getInviteFromToken($token);
+//            if (!$request->has('email')) {
+//                $request->request->add(['email' => $invite->email]);
+//                $request->request->add(['verified' => 1]);
+//            }
+//        }
     }
 
     /**

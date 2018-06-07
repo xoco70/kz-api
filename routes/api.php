@@ -19,6 +19,8 @@ $router->get('/tournaments', 'TournamentController@index');
 
 
 $router->post('/auth/login', 'Auth\AuthController@authenticate');
+$router->post('/register', 'Auth\RegisterController@register');
+$router->get('register/confirm/{token}', 'Auth\RegisterController@confirm');
 
 
 $router->group(['middleware' => 'jwt.auth'],

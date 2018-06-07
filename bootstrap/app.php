@@ -87,6 +87,7 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 //$app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 $app->register(Aws\Laravel\AwsServiceProvider::class);
 $app->register(Urameshibr\Providers\FormRequestServiceProvider::class);
@@ -95,6 +96,8 @@ $app->register(Urameshibr\Providers\FormRequestServiceProvider::class);
 $app->register(Xoco70\LaravelTournaments\TournamentsServiceProvider::class);
 
 $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
+$app->register(OwenIt\Auditing\AuditingServiceProvider::class);
+$app->register(Cviebrock\EloquentSluggable\ServiceProvider::class);
 
 if ($app->environment() !== 'production') {
     $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
@@ -124,5 +127,6 @@ $app->router->group([
 $app->configure('countries');
 $app->configure('constants');
 $app->configure('debugbar');
+$app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
 return $app;

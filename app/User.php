@@ -3,12 +3,14 @@
 namespace App;
 
 use App\Traits\RoleTrait;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
 /**
@@ -27,7 +29,7 @@ use Illuminate\Support\Collection;
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, CanResetPassword, SoftDeletes, RoleTrait;
+    use Authenticatable, CanResetPassword, SoftDeletes, RoleTrait, Notifiable, Sluggable;
 
     /**
      * The database table used by the model.
@@ -49,6 +51,22 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $hidden = ['password', 'remember_token'];
 
+
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable()
+    {
+        // TODO should test charset ( would fail on Japonese / Chinese / Korean ) --> email
+        return [
+            'slug' => [
+                'source' => 'name'
+            ]
+        ];
+    }
+
     /**
      * Boot the model.
      *
@@ -57,16 +75,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public static function boot()
     {
         parent::boot();
-        static::creating(function ($user) {
-            $softDeletedUser = User::onlyTrashed()->where('email', '=', $user->email)->first();
-            if ($softDeletedUser != null) {
-                $softDeletedUser->restore();
-                return false;
-            }
+        static::creating(function (User $user) {
+//            $softDeletedUser = User::onlyTrashed()->where('email', '=', $user->email)->first();
+//            if ($softDeletedUser != null) {
+//                $softDeletedUser->restore();
+//                return false;
+//            }
             $user->token = str_random(30);
-            if ($user->country_id == 0) {
-                $user->addGeoData();
-            }
+//            if ($user->country_id == 0) {
+//                $user->addGeoData();
+//            }
             return true;
         });
 
@@ -85,20 +103,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable()
-    {
-        return [
-            'slug' => [
-                'source' => 'email'
-            ]
-        ];
-    }
-
-    /**
      * @return string
      */
     public function getRouteKeyName()
@@ -111,7 +115,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function addGeoData()
     {
-        $ip = request()->ip();
+        $ip = Request::ip();
         $location = geoip($ip);
         $country = Country::where('name', '=', $location->country)->first();
         if (is_null($country)) {
@@ -127,17 +131,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->longitude = $location['lon'];
     }
 
-    /**
-     * Confirm the user.
-     *
-     * @return void
-     */
-    public function confirmEmail()
-    {
-        $this->verified = true;
-        $this->token = null;
-        $this->save();
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -271,7 +264,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         return $this->isSuperAdmin();
     }
-
 
 
     /**
