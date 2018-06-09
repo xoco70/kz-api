@@ -80,16 +80,17 @@ class TournamentController extends Controller
     /**
      * Remove the Tournament from storage.
      *
-     * @param Tournament $tournament
+     * @param $slug
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
      */
-    public function destroy(Tournament $tournament)
+    public function destroy($slug)
     {
+        $tournament = Tournament::where('slug', $slug)->first();
+        if (!$tournament) return response()->json(['msg' => 'tournament doesnt exist', 'status' => 'error']);
         if ($tournament->delete()) {
-            return Response::json(['msg' => Lang::get('msg.tournament_delete_successful', ['name' => $tournament->name]), 'status' => 'success']);
+            return response()->json(['msg' => Lang::get('msg.tournament_delete_successful', ['name' => $tournament->name]), 'status' => 'success']);
         }
-        return Response::json(['msg' => Lang::get('msg.tournament_delete_error', ['name' => $tournament->name]), 'status' => 'error']);
+        return response()->json(['msg' => Lang::get('msg.tournament_delete_error'), 'status' => 'error']);
     }
 
     /**

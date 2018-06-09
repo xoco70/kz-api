@@ -42,15 +42,20 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
     protected static function boot()
     {
         parent::boot();
-        static::deleting(function ($tournament) {
+        static::deleting(function (Tournament $tournament) {
             $tournament->championships->each->delete();
-            $tournament->invites->each->delete();
+//            $tournament->invites->each->delete();
 
         });
-        static::restoring(function ($tournament) {
+        static::restoring(function (Tournament $tournament) {
             $tournament->championships()->withTrashed()->get()->each->restore();
         });
 
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     /**
@@ -272,10 +277,6 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
         return $this->level_id == 1;
     }
 
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
 
     /**
      * @return bool

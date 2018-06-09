@@ -16,6 +16,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/tournaments', 'TournamentController@index');
+$router->delete('/tournaments/{slug}', 'TournamentController@destroy');
 
 
 $router->post('/auth/login', 'Auth\AuthController@authenticate');
