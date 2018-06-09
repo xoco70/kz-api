@@ -17,6 +17,7 @@ class TournamentResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'user' => User::findOrFail($this->user_id)->email,
             'date' => $this->dateIni,
             'name' => $this->name,
