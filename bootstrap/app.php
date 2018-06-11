@@ -126,6 +126,7 @@ $app->router->group([
 });
 $app->configure('countries');
 $app->configure('constants');
+$app->configure('options');
 $app->configure('debugbar');
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 

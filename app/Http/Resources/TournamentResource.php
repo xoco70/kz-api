@@ -17,11 +17,14 @@ class TournamentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'slug' => $this->slug,
+            'name' => $this->name,
             'user' => User::findOrFail($this->user_id)->email,
             'date' => $this->dateIni,
-            'name' => $this->name,
-            'numCompetitors' => $this->competitors->count()
+            'slug' => $this->slug,
+            'venue_id' => $this->venue_id,
+            'championships' => ChampionshipResource::collection($this->whenLoaded('championships')),
+            'venue' => new VenueResource($this->whenLoaded('venue')),
+            'competitors_count' => $this->competitors->count()
         ];
     }
 }

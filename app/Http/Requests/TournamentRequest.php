@@ -63,23 +63,6 @@ class TournamentRequest extends Request
     }
 
     /**
-     * @return Tournament $tournament
-     */
-    public function persist()
-    {
-        $request = $this->except('category', 'config');
-        $request['registerDateLimit'] = Carbon::now()->addMonth(3);
-
-        $tournament = Auth::user()->tournaments()->create($request);
-        if ($this->rule_id == 0) {
-            $tournament->categories()->sync($this->input('category'));
-            return $tournament;
-        }
-        $tournament->setAndConfigureCategories($this->rule_id);
-        return $tournament;
-    }
-
-    /**
      * @param Tournament $tournament
      * @return array
      */

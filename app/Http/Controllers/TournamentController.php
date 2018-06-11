@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
+use App\Country;
 use App\Exceptions\InvitationNeededException;
 use App\Grade;
 use App\Http\Requests\TournamentRequest;
@@ -9,6 +11,7 @@ use App\Http\Resources\TournamentResource;
 use App\Tournament;
 use App\Venue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
@@ -28,53 +31,106 @@ class TournamentController extends Controller
     }
 
     /**
+     * Display a listing of the resource
+     */
+    public function edit($slug)
+    {
+        $tournament = Tournament::where('slug', $slug)->first
+        ();
+        $selectedCategories = $tournament->categories()->select('category.id', 'name')->get()->toArray(); // 3,4 ,240
+
+        //TODO Bad workaround
+        $categories = [];
+        foreach ($selectedCategories as $category) {
+            unset($category['pivot']);
+            $categories[] = $category;
+        }
+
+        $defaultCategories = Category::take(7)->select('id', 'name')->get()->sortBy('id')->toArray(); // 1 2 3 4 5 6 7
+        foreach ($defaultCategories as $category) {
+            $categories[] = $category;
+        }
+
+        $tournament = Tournament::with('competitors', 'championshipSettings', 'championships.settings', 'championships.category', 'venue')
+            ->withCount('competitors', 'teams', 'championshipSettings')
+            ->where('slug', $slug)->first();
+
+
+        //TODO Should be on his own controller
+        $countries = Country::getAll();
+
+        $tournament->trees_count = $tournament->trees->groupBy('championship_id')->count();
+        $grades = Grade::getAllPlucked();
+//        $levels = TournamentLevel::getAllPlucked();
+//        $hanteiLimit = config('options.hanteiLimit');
+
+//        return view('test');
+        $response = [
+            'tournament' => $tournament,
+            'categories' => $categories,
+            'countries' => $countries,
+            'grades' => $grades,
+            'code' => 200
+
+        ];
+        return $response;
+    }
+
+    /**
      * Store a new Tournament
      *
-     * @param TournamentRequest $form
+     * @param Request $request
      * @return \Illuminate\Http\Response
+     * @internal param TournamentRequest $form
      */
-    public function store(TournamentRequest $form)
+    public function store(Request $request)
     {
-        $tournament = $form->persist();
-        $msg = trans('msg.tournament_create_successful', ['name' => $tournament->name]);
-        flash()->success($msg);
-        return redirect(URL::action('TournamentController@edit', $tournament->slug));
+        $request = $request->except('category', 'config');
+        $request['registerDateLimit'] = Carbon::now()->addMonth(3);
+
+        $tournament = Auth::user()->tournaments()->create($request);
+        if ($request->rule_id == 0) {
+            $tournament->categories()->sync($request->input('category'));
+            return $tournament;
+        }
+        $tournament->setAndConfigureCategories($request->rule_id);
+        return $tournament;
     }
 
     /**
      * Update the Tournament in storage.
      *
-     * @param TournamentRequest $request
-     * @param VenueRequest $venueRequest
-     * @param Tournament $tournament
+     * @param TournamentRequest|Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(TournamentRequest $request, VenueRequest $venueRequest, Tournament $tournament)
+    public function update(Request $request)
     {
+        dd($request);
         //TODO Shouldn't I have a Policy???
-        $venue = $tournament->venue;
-        if ($venue == null)
-            $venue = new Venue;
-
-        if ($venueRequest->has('venue_name')) {
-            $venue->fill($venueRequest->all());
-            $venue->save();
-        } else {
-            $venue = new Venue();
-        }
-        $res = $request->update($tournament, $venue);
-
-        if ($request->ajax()) {
-            $res == 0
-                ? $result = Response::json(['msg' => trans('msg.tournament_update_error', ['name' => $tournament->name]), 'status' => 'error'])
-                : $result = Response::json(['msg' => trans('msg.tournament_update_successful', ['name' => $tournament->name]), 'status' => 'success']);
-            return $result;
-        } else {
-            $res == 0
-                ? flash()->success(trans('msg.tournament_update_error', ['name' => $tournament->name]))
-                : flash()->success(trans('msg.tournament_update_successful', ['name' => $tournament->name]));
-            return redirect(URL::action('TournamentController@edit', $tournament->slug))->with('activeTab', $request->activeTab);
-        }
+//        $venue = $tournament->venue;
+//        if ($venue == null)
+//            $venue = new Venue;
+//
+//        if ($venueRequest->has('venue_name')) {
+//            $venue->fill($venueRequest->all());
+//            $venue->save();
+//        } else {
+//            $venue = new Venue();
+//        }
+//        $res = $request->update($tournament, $venue);
+//
+//        if ($request->ajax()) {
+//            $res == 0
+//                ? $result = Response::json(['msg' => trans('msg.tournament_update_error', ['name' => $tournament->name]), 'status' => 'error'])
+//                : $result = Response::json(['msg' => trans('msg.tournament_update_successful', ['name' => $tournament->name]), 'status' => 'success']);
+//            return $result;
+//        } else {
+//            $res == 0
+//                ? flash()->success(trans('msg.tournament_update_error', ['name' => $tournament->name]))
+//                : flash()->success(trans('msg.tournament_update_successful', ['name' => $tournament->name]));
+//            return redirect(URL::action('TournamentController@edit', $tournament->slug))->with('activeTab', $request->activeTab);
+//        }
+        return null;
     }
 
     /**

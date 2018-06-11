@@ -16,7 +16,13 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/tournaments', 'TournamentController@index');
+$router->get('/tournaments/{slug}/edit', 'TournamentController@edit');
 $router->delete('/tournaments/{slug}', 'TournamentController@destroy');
+$router->put('/tournaments/{slug}', 'TournamentController@update');
+
+$router->get('/categories', 'CategoryController@index');
+$router->get('/tournaments/levels', 'TournamentLevelController@index');
+$router->get('/tournaments/presets', 'PresetsController@index');
 
 
 $router->post('/auth/login', 'Auth\AuthController@authenticate');

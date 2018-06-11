@@ -14,10 +14,9 @@ class Category extends \Xoco70\LaravelTournaments\Models\Category
      * @param null $ruleId
      * @return array
      */
-    public function getCategorieslabelByRule($ruleId = null)
+    public static function getCategorieslabel($ruleId = null)
     {
         $result = [];
-
         if ($ruleId == null) {
             $rules = ['ikf', 'ekf', 'lakc'];
             foreach ($rules as $rule) {
