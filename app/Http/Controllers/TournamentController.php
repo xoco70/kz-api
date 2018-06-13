@@ -6,10 +6,11 @@ use App\Category;
 use App\Country;
 use App\Exceptions\InvitationNeededException;
 use App\Grade;
-use App\Http\Requests\TournamentRequest;
 use App\Http\Resources\TournamentResource;
 use App\Tournament;
 use App\Venue;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
@@ -23,6 +24,23 @@ use Illuminate\Support\Facades\URL;
 class TournamentController extends Controller
 {
     /**
+     * The request instance.
+     *
+     * @var \Illuminate\Http\Request
+     */
+    private $request;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param  \Illuminate\Http\Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Display a listing of the resource
      */
     public function index()
@@ -35,26 +53,14 @@ class TournamentController extends Controller
      */
     public function edit($slug)
     {
-        $tournament = Tournament::where('slug', $slug)->first
-        ();
-        $selectedCategories = $tournament->categories()->select('category.id', 'name')->get()->toArray(); // 3,4 ,240
-
-        //TODO Bad workaround
-        $categories = [];
-        foreach ($selectedCategories as $category) {
-            unset($category['pivot']);
-            $categories[] = $category;
-        }
-
-        $defaultCategories = Category::take(7)->select('id', 'name')->get()->sortBy('id')->toArray(); // 1 2 3 4 5 6 7
-        foreach ($defaultCategories as $category) {
-            $categories[] = $category;
-        }
+        $tournament = Tournament::where('slug', $slug)->first();
+        $selectedCategories = $tournament->categories()->select('category.id', 'name')->get(); // 3,4 ,240
+        $defaultCategories = Category::take(7)->select('id', 'name')->get()->sortBy('id'); // 1 2 3 4 5 6 7
+        $categories = $selectedCategories->merge($defaultCategories)->toArray();
 
         $tournament = Tournament::with('competitors', 'championshipSettings', 'championships.settings', 'championships.category', 'venue')
             ->withCount('competitors', 'teams', 'championshipSettings')
             ->where('slug', $slug)->first();
-
 
         //TODO Should be on his own controller
         $countries = Country::getAll();
@@ -100,12 +106,74 @@ class TournamentController extends Controller
     /**
      * Update the Tournament in storage.
      *
-     * @param TournamentRequest|Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function update(Request $request)
     {
-        dd($request);
+        $slug = $this->request->slug;
+        $tab = $this->request->tab;
+
+        $tournament = Tournament::where('slug', $slug)->first();
+
+        if ($tab == 'general') {
+            try {
+                $tournament->name = $this->request->name;
+                // Build date from Json
+                $dateIni = $this->request->dateIni;
+                $dateIni = $dateIni['year'] . '-' . $dateIni['month'] . '-' . $dateIni['day'];
+                $dateIni = Carbon::parse($dateIni)->format('Y-m-d');
+                $tournament->dateIni = $dateIni;
+
+                $dateFin = $this->request->dateFin;
+                $dateFin = $dateFin['year'] . '-' . $dateFin['month'] . '-' . $dateFin['day'];
+                $dateFin = Carbon::parse($dateFin)->format('Y-m-d');
+                $tournament->dateFin = $dateFin;
+
+                $registerDateLimit = $this->request->registerDateLimit;
+                $registerDateLimit = $registerDateLimit['year'] . '-' . $registerDateLimit['month'] . '-' . $registerDateLimit['day'];
+                $registerDateLimit = Carbon::parse($registerDateLimit)->format('Y-m-d');
+                $tournament->registerDateLimit = $registerDateLimit;
+
+                $tournament->promoter = $this->request->promoter;
+                $tournament->host_organization = $this->request->host_organization;
+                $tournament->technical_assistance = $this->request->technical_assistance;
+            } catch (Exception $e) {
+                return response()->json($e->getMessage(), 422);
+            }
+
+        }
+        if ($tab == 'venue') {
+            $venue = $tournament->venue;
+            if ($venue == null)
+                $venue = new Venue;
+            $venue->fill([
+                'venue_name' => $this->request->venue['venue_name'],
+                'address' => $this->request->venue['address'],
+                'details' => $this->request->venue['details'],
+                'city' => $this->request->venue['city'],
+                'CP' => $this->request->venue['CP'],
+                'state' => $this->request->venue['state'],
+                'latitude' => $this->request->venue['latitude'],
+                'longitude' => $this->request->venue['longitude'],
+                'country_id' => $this->request->venue['country_id'],
+            ]);
+            $venue->save();
+            $tournament->venue_id = $venue->id;
+        }
+
+        if ($tab == 'categories') {
+            try {
+                $categories = $this->request->categoriesSelected;
+                return $tournament->categories()->sync($categories);
+            } catch (Exception $e) {
+                return response()->json($e->getMessage(), 422);
+            }
+        }
+//        if ($tab == 'settings') {
+//
+//        }
+        return response()->json($tournament->save(), 200);
         //TODO Shouldn't I have a Policy???
 //        $venue = $tournament->venue;
 //        if ($venue == null)
@@ -130,14 +198,13 @@ class TournamentController extends Controller
 //                : flash()->success(trans('msg.tournament_update_successful', ['name' => $tournament->name]));
 //            return redirect(URL::action('TournamentController@edit', $tournament->slug))->with('activeTab', $request->activeTab);
 //        }
-        return null;
     }
 
     /**
      * Remove the Tournament from storage.
      *
      * @param $slug
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy($slug)
     {
@@ -151,7 +218,7 @@ class TournamentController extends Controller
 
     /**
      * @param $tournamentSlug
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function restore($tournamentSlug)
     {

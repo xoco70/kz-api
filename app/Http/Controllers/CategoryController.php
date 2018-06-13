@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 
 
@@ -25,14 +24,15 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param Request|CategoryRequest $request
+     * @param Request $request
      * @return \Illuminate\Database\Eloquent\Model
      */
 
-    public function store(CategoryRequest $request)
+    public function store(Request $request)
     {
-        $category = $request->getCategoryByFilters();
-
+//        $category = $request->getCategoryByFilters();
+        $category = new Category;
+        $category->name = $request->name;
         $category->isTeam = $request->isTeam;
         $category->gender = $request->gender;
         $category->ageCategory = $request->ageCategory;
@@ -41,7 +41,6 @@ class CategoryController extends Controller
         $category->gradeCategory = $request->gradeCategory;
         $category->gradeMin = $request->gradeMin;
         $category->gradeMax = $request->gradeMax;
-        $category->name = $category->buildName();
 
         $newCategoryName = Category::firstOrCreate($category->toArray());
 

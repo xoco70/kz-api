@@ -51,10 +51,9 @@ class AuthController
     /**
      * Authenticate a user and return the token if the provided credentials are correct.
      *
-     * @param  \App\User $user
      * @return mixed
      */
-    public function authenticate(User $user)
+    public function authenticate()
     {
 //        $this->validate($this->request, [
 //            'email' => 'required|email',
