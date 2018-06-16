@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -11,8 +12,8 @@ class JwtMiddleware
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $token = $request->get('token');
-
+        $token = $request->header('authorization');
+        $token = substr($token, 7); // Remove Bearer word
         if (!$token) {
             // Unauthorized response if token not there
             return response()->json([
@@ -21,6 +22,7 @@ class JwtMiddleware
         }
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+
         } catch (ExpiredException $e) {
             return response()->json([
                 'error' => 'Provided token is expired.'
@@ -30,7 +32,8 @@ class JwtMiddleware
                 'error' => 'An error while decoding token.'
             ], 400);
         }
-        $user = User::find($credentials->sub);
+        $user = User::find($credentials->sub->id);
+
         // Now let's put the user in the request class so that you can grab it from there
         $request->auth = $user;
         return $next($request);
