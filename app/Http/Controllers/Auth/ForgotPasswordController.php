@@ -42,21 +42,5 @@ class ForgotPasswordController extends Controller
         ]);
         $user->notify(new ResetLinkEmailSent($user, $token));
 
-//        Mail::send('password', ['user' => $user, 'token' => $token], function ($m) use ($user) {
-//            $m->from('contact@kendozone.com', 'Kendozone Team');
-//            $m->to($user->email, $user->name)->subject('Your Reminder!');
-//        });
-
-//        Mail::send([
-//            'to' => $user->email,
-//            'subject' => 'Your Password Reset Link',
-//            'view' => config('auth.passwords.users.email'),
-//            'view_data' => [
-//                'token' => $token,
-//                'user' => $user
-//            ]
-//        ]);
     }
-
-
 }
