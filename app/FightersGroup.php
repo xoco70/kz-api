@@ -9,40 +9,48 @@ class FightersGroup extends \Xoco70\LaravelTournaments\Models\FightersGroup
      * @param $request
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public static function getTournament($request)
+    public static function getTournament($param)
     {
         $tournament = null;
-        if (FightersGroup::hasTournamentInRequest($request)) {
-            $tournamentSlug = $request->tournament;
-            $tournament = Tournament::with(['championships' => function ($query) use ($request) {
-                $query->with([
-                    'settings',
-                    'category',
-                    'users',
-                    'fightersGroups' => function ($query) {
-                        return $query->with('teams', 'competitors', 'fights');
-                    }]);
-            }])->withCount('competitors', 'teams')
-                ->where('slug', $tournamentSlug)->firstOrFail();
-        } elseif (FightersGroup::hasChampionshipInRequest($request)) {
-            $tournament = Tournament::whereHas('championships', function ($query) use ($request) {
-                return $query->where('id', $request->championshipId);
-            })
-                ->with(['championships' => function ($query) use ($request) {
-                    $query->where('id', '=', $request->championshipId)
-                        ->with([
-                            'settings',
-                            'category',
-                            'users',
-                            'fightersGroups' => function ($query) {
-                                return $query->with('teams', 'competitors', 'fights');
-                            }]);
-                }])
-                ->firstOrFail();
-
+        if (is_int($param)) {
+            return static::getTournamentFromChampionship($param);
         }
-        return $tournament;
+        return static::getTournamentFromTournament($param);
+
     }
+
+    public static function getTournamentFromChampionship($id)
+    {
+        return Tournament::whereHas('championships', function ($query) use ($id) {
+            return $query->where('id', $id);
+        })
+            ->with(['championships' => function ($query) use ($id) {
+                $query->where('id', '=', $id)
+                    ->with([
+                        'settings',
+                        'category',
+                        'users',
+                        'fightersGroups' => function ($query) {
+                            return $query->with('teams', 'competitors', 'fights');
+                        }]);
+            }])
+            ->firstOrFail();
+    }
+
+    public static function getTournamentFromTournament($slug)
+    {
+        return Tournament::with(['championships' => function ($query) use ($slug) {
+            $query->with([
+                'settings',
+                'category',
+                'users',
+                'fightersGroups' => function ($query) {
+                    return $query->with('teams', 'competitors', 'fights');
+                }]);
+        }])->withCount('competitors', 'teams')
+            ->where('slug', $slug)->firstOrFail();
+    }
+
 
     /**
      * Check if Request contains tournamentSlug / Should Move to TreeRequest When Built.

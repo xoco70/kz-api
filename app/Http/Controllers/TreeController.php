@@ -18,9 +18,9 @@ class TreeController extends Controller
      * @param Request $request
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function index(Request $request)
+    public function index($slug)
     {
-        $tournament = FightersGroup::getTournament($request);
+        $tournament = FightersGroup::getTournament($slug);
         return $tournament;
     }
 
