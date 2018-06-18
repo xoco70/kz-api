@@ -1,7 +1,6 @@
 <?php
 
 return array(
-    'hello' => 'Hello',
     'user_already_exists' => 'User already exists.',
     'user_already_registered_in_category' => 'The user is already registered to this category.',
     'tournament_create_successful' => 'Tournament <b>:name</b><br/> created',

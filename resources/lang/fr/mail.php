@@ -17,4 +17,5 @@ return array (
   'dont_forget_to_pay' => 'N\'oubliez pas de payer les frais afin d\'être éligible au tirage au sort',
   'before_day' => 'Avant Jour',
   'your_connection_data' => 'Vos informations de connexion sont',
+
 );
