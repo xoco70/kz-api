@@ -62,11 +62,7 @@ class TournamentController extends Controller
             ->withCount('competitors', 'teams', 'championshipSettings')
             ->where('slug', $slug)->first();
 
-        //TODO Should be on his own controller
-        $countries = Country::getAll();
-
         $tournament->trees_count = $tournament->trees->groupBy('championship_id')->count();
-        $grades = Grade::getAllPlucked();
 //        $levels = TournamentLevel::getAllPlucked();
 //        $hanteiLimit = config('options.hanteiLimit');
 
@@ -74,8 +70,7 @@ class TournamentController extends Controller
         $response = [
             'tournament' => $tournament,
             'categories' => $categories,
-            'countries' => $countries,
-            'grades' => $grades,
+//            'grades' => $grades,
             'code' => 200
 
         ];
