@@ -56,6 +56,7 @@ class CompetitorController extends Controller
     {
         $competitors = $request->competitors;
         $championship = Championship::findOrFail($championshipId);
+        $tournament = $championship->tournament;
 
         //TODO Should first validate competitors
         foreach ($competitors as $competitor) {
@@ -74,21 +75,22 @@ class CompetitorController extends Controller
                 'email' => $email
             ]);
 
-//            $championships = $user->championships();
+            $championships = $user->championships();
 //            // If user has not registered yet this championship
-//            if (!$championships->get()->contains($championship)) {
-//                // Get Competitor Short ID
-//                $categories = $tournament->championships->pluck('id');
-//                $shortId = Competitor::getShortId($categories, $tournament);
-//                $championships->attach($championshipId, ['confirmed' => 0, 'short_id' => $shortId]);
-//            }
-//            //TODO Should add a test for this
-//            // We send him an email with detail (and user /password if new)
+            if (!$championships->get()->contains($championship)) {
+                // Get Competitor Short ID
+                $categories = $tournament->championships->pluck('id');
+                $shortId = Competitor::getShortId($categories, $tournament, $request->auth);
+                $championships->attach($championshipId, ['confirmed' => 0, 'short_id' => $shortId]);
+            }
+            //TODO Should add a test for this
+            // We send him an email with detail (and user /password if new)
 //            if (strpos($email, '@kendozone.com') === -1) { // Substring is not present
 //                $code = resolve(Invite::class)->generateTournamentInvite($user->email, $tournament);
 //                $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
 //            }
         }
+        return response()->json(['competitors' => $competitors, 'code' => 200]);
 //        flash()->success(trans('msg.user_registered_successful', ['tournament' => $tournament->name]));
 //        return redirect(URL::action('CompetitorController@index', $tournament->slug));
     }

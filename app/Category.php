@@ -37,7 +37,7 @@ class Category extends \Xoco70\LaravelTournaments\Models\Category
     {
 
         if (Auth::check()) {
-            App::setLocale(Auth::user()->locale);
+            App::setLocale($request->auth->locale);
         }
         $genders = [
             'M' => trans('categories.male'),

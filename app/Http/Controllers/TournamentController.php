@@ -89,7 +89,7 @@ class TournamentController extends Controller
         $request = $request->except('category', 'config');
         $request['registerDateLimit'] = Carbon::now()->addMonth(3);
 
-        $tournament = Auth::user()->tournaments()->create($request);
+        $tournament = $request->auth->tournaments()->create($request);
         if ($request->rule_id == 0) {
             $tournament->categories()->sync($request->input('category'));
             return $tournament;
@@ -241,7 +241,7 @@ class TournamentController extends Controller
             return redirect(URL::action('Auth\LoginController@login'));
         }
         if ($tournament->isOpen() && Auth::check()) {
-            App::setLocale(Auth::user()->locale);
+            App::setLocale($request->auth->locale);
 
             $grades = Grade::getAllPlucked();
             $tournament = Tournament::with('championships.category', 'championships.users')->find($tournament->id);

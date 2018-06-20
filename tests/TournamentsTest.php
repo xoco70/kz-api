@@ -199,7 +199,7 @@ class TournamentsTest extends TestCase
 //    {
 //        Artisan::call('db:seed', ['--class' => 'TournamentLevelSeeder', '--database' => 'sqlite']);
 //
-//        $tournament = factory(Tournament::class)->create(['user_id' => Auth::user()->id]);
+//        $tournament = factory(Tournament::class)->create(['user_id' => $request->auth->id]);
 //        $championship1 = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]);
 //        $championship2 = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 2]);
 //        factory(ChampionshipSettings::class)->create(['championship_id' => $championship1->id]);
@@ -222,7 +222,7 @@ class TournamentsTest extends TestCase
 //    {
 //        Artisan::call('db:seed', ['--class' => 'TournamentLevelSeeder', '--database' => 'sqlite']);
 //        $tournament = factory(Tournament::class)->create([
-//            'user_id' => Auth::user()->id,
+//            'user_id' => $request->auth->id,
 //            'deleted_at' => '2015-12-12']);
 //
 //        $this->actingAs($this->root, 'api')

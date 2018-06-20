@@ -36,7 +36,7 @@ class TreeController extends Controller
 
         $tournament = FightersGroup::getTournament($request); // Builder
 
-        if (Auth::user()->cannot('store', [FightersGroup::class, $tournament])) {
+        if ($request->auth->cannot('store', [FightersGroup::class, $tournament])) {
             throw new AuthorizationException();
         }
         foreach ($tournament->championships as $championship) {

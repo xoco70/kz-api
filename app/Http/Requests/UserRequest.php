@@ -67,7 +67,7 @@ class UserRequest extends Request
         $user->fill($data);
         $user->password = bcrypt($this->password);
 
-        if (Auth::user()->cannot('store', $user)) {
+        if ($request->auth->cannot('store', $user)) {
             throw new AuthorizationException();
         }
         return $user->save();
@@ -75,9 +75,9 @@ class UserRequest extends Request
 
     public function update(User $user)
     {
-//        $this->authorize('update', [$user, Auth::user()]);
+//        $this->authorize('update', [$user, $request->auth]);
 
-        if (Auth::user()->cannot('update', $user)) {
+        if ($request->auth->cannot('update', $user)) {
             throw new AuthorizationException();
         }
         $except = [];
