@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Championship;
 use App\Competitor;
 use App\Tournament;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class CompetitorController extends Controller
@@ -49,22 +52,28 @@ class CompetitorController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $championshipId)
     {
-//        $championshipId = $request->championshipId;
-//        $championship = Championship::findOrFail($championshipId);
-//
-//        foreach ($request->firstnames as $id => $firstname) {
-//            $email = $request->emails[$id] ?? Auth::user()->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
-//            $lastname = $request->lastnames[$id] ?? '';
-//
-//            $user = Competitor::createUser([
-//                'firstname' => $firstname,
-//                'lastname' => $lastname,
-//                'name' => $firstname . " " . $lastname,
-//                'email' => $email
-//            ]);
-//
+        $competitors = $request->competitors;
+        $championship = Championship::findOrFail($championshipId);
+
+        //TODO Should first validate competitors
+        foreach ($competitors as $competitor) {
+            ;
+            $firstname = $competitor['firstname'];
+
+            $email = $competitor['email'] != null
+                ? $competitor['email']
+                : $request->auth->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
+            $lastname = $competitor['lastname'] ?? '';
+
+            $user = Competitor::createUser([
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'name' => $firstname . " " . $lastname,
+                'email' => $email
+            ]);
+
 //            $championships = $user->championships();
 //            // If user has not registered yet this championship
 //            if (!$championships->get()->contains($championship)) {
@@ -79,7 +88,7 @@ class CompetitorController extends Controller
 //                $code = resolve(Invite::class)->generateTournamentInvite($user->email, $tournament);
 //                $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
 //            }
-//        }
+        }
 //        flash()->success(trans('msg.user_registered_successful', ['tournament' => $tournament->name]));
 //        return redirect(URL::action('CompetitorController@index', $tournament->slug));
     }
