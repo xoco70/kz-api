@@ -8,9 +8,8 @@ use Illuminate\Support\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
 
 
-class Invite extends Model implements Auditable
+class Invite extends Model // removed auditable, was looking for session, not stateless
 {
-    use \OwenIt\Auditing\Auditable;
     public $timestamps = true;
     protected $table = 'invitation';
     protected $fillable = [

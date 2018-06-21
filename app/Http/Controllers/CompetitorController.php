@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Championship;
 use App\Competitor;
+use App\Invite;
+use App\Notifications\InviteCompetitor;
 use App\Tournament;
 use App\User;
 use Illuminate\Http\JsonResponse;
@@ -80,19 +82,17 @@ class CompetitorController extends Controller
             if (!$championships->get()->contains($championship)) {
                 // Get Competitor Short ID
                 $categories = $tournament->championships->pluck('id');
-                $shortId = Competitor::getShortId($categories, $tournament, $request->auth);
+                $shortId = Competitor::getShortId($categories, $tournament, $user);
                 $championships->attach($championshipId, ['confirmed' => 0, 'short_id' => $shortId]);
             }
             //TODO Should add a test for this
             // We send him an email with detail (and user /password if new)
-//            if (strpos($email, '@kendozone.com') === -1) { // Substring is not present
-//                $code = resolve(Invite::class)->generateTournamentInvite($user->email, $tournament);
-//                $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
-//            }
+            if (!strpos($email, '@kendozone.com')) { // Substring is not present
+                $code = app(Invite::class)->generateTournamentInvite($user->email, $tournament);
+                $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
+            }
         }
         return response()->json(['competitors' => $competitors, 'code' => 200]);
-//        flash()->success(trans('msg.user_registered_successful', ['tournament' => $tournament->name]));
-//        return redirect(URL::action('CompetitorController@index', $tournament->slug));
     }
 
     /**

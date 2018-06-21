@@ -160,7 +160,8 @@ class TournamentController extends Controller
         if ($tab == 'categories') {
             try {
                 $categories = $this->request->categoriesSelected;
-                return $tournament->categories()->sync($categories);
+                $tournament->categories()->sync($categories);
+                return $tournament->where('slug', $slug)->with('championships.category')->first();
             } catch (Exception $e) {
                 return response()->json($e->getMessage(), 422);
             }

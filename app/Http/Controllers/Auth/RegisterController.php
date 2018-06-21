@@ -64,11 +64,11 @@ class RegisterController extends Controller
      */
     public function confirm($token)
     {
+        // TODO Redirect to Front error page is fail
         $user = User::where('token', $token)->firstOrFail();
         $user->verified = true;
-        $user->token = null;
         $user->save();
-        return redirect(env('URL_FRONT').'auth/login');
+        return redirect(env('URL_FRONT').'login?welcome=1');
     }
 
     /**

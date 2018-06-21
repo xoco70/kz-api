@@ -8,6 +8,7 @@ class Competitor extends \Xoco70\LaravelTournaments\Models\Competitor
 {
     public static function getShortId($categories, Tournament $tournament, User $user)
     {
+
         $competitor = static::where('user_id', $user->id)
             ->whereIn('championship_id', $categories)->first();
 
