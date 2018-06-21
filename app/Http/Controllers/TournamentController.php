@@ -84,17 +84,21 @@ class TournamentController extends Controller
      * @return \Illuminate\Http\Response
      * @internal param TournamentRequest $form
      */
-    public function store(Request $request)
+    public function store()
     {
-        $request = $request->except('category', 'config');
-        $request['registerDateLimit'] = Carbon::now()->addMonth(3);
-
-        $tournament = $request->auth->tournaments()->create($request);
-        if ($request->rule_id == 0) {
-            $tournament->categories()->sync($request->input('category'));
+        $categoriesSelected = $this->request->categoriesSelected;
+        $rule_id = $this->request->rule_id;
+        $request = $this->request->except('categoriesSelected');
+        $request['dateIni'] = Tournament::parseDate($this->request->dateIni);
+        $request['dateFin'] = Tournament::parseDate($this->request->dateFin);
+        $request['registerDateLimit'] = Carbon::now()->addMonth(3)->format('Y-m-d');
+        $tournament = $this->request->auth->tournaments()->create($request);
+        // No presets,
+        if ($rule_id == 1) {
+            $tournament->categories()->sync($categoriesSelected);
             return $tournament;
         }
-        $tournament->setAndConfigureCategories($request->rule_id);
+        $tournament->setAndConfigureCategories($rule_id);
         return $tournament;
     }
 
@@ -115,21 +119,9 @@ class TournamentController extends Controller
             try {
                 $tournament->name = $this->request->name;
                 // Build date from Json
-                $dateIni = $this->request->dateIni;
-                $dateIni = $dateIni['year'] . '-' . $dateIni['month'] . '-' . $dateIni['day'];
-                $dateIni = Carbon::parse($dateIni)->format('Y-m-d');
-                $tournament->dateIni = $dateIni;
-
-                $dateFin = $this->request->dateFin;
-                $dateFin = $dateFin['year'] . '-' . $dateFin['month'] . '-' . $dateFin['day'];
-                $dateFin = Carbon::parse($dateFin)->format('Y-m-d');
-                $tournament->dateFin = $dateFin;
-
-                $registerDateLimit = $this->request->registerDateLimit;
-                $registerDateLimit = $registerDateLimit['year'] . '-' . $registerDateLimit['month'] . '-' . $registerDateLimit['day'];
-                $registerDateLimit = Carbon::parse($registerDateLimit)->format('Y-m-d');
-                $tournament->registerDateLimit = $registerDateLimit;
-
+                $tournament->dateIni = Tournament::parseDate($this->request->dateIni);
+                $tournament->dateFin = Tournament::parseDate($this->request->dateFin);
+                $tournament->registerDateLimit = Tournament::parseDate($this->request->registerDateLimit);
                 $tournament->promoter = $this->request->promoter;
                 $tournament->host_organization = $this->request->host_organization;
                 $tournament->technical_assistance = $this->request->technical_assistance;

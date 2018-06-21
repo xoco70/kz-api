@@ -14,6 +14,7 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->get('/tournaments', 'TournamentController@index');
         $router->get('/tournaments/{slug}/edit', 'TournamentController@edit');
         $router->delete('/tournaments/{slug}', 'TournamentController@destroy');
+        $router->post('/tournaments', 'TournamentController@store');
         $router->put('/tournaments/{slug}', 'TournamentController@update');
         $router->get('/tournaments/levels', 'TournamentLevelController@index');
         $router->get('/tournaments/presets', 'PresetsController@index');

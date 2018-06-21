@@ -3,8 +3,10 @@
 namespace App;
 
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Illuminate\Support\Carbon;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 
 
@@ -18,7 +20,7 @@ use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
  */
 class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
 {
-    use SoftDeletes;
+    use SoftDeletes, Sluggable;
 
     public $timestamps = true;
     protected $table = 'tournament';
@@ -378,5 +380,19 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
             ->pluck('name', 'id')
             ->sortBy('id')
             ->toArray();
+    }
+
+    /**
+     * Convert date to coming from ng-calendar
+     * Initial: "date":{"year":2018,"month":5,"day":31}
+     * Output: "2018-05-31"
+     * @param $date
+     * @return string
+     */
+    public static function parseDate($date)
+    {
+        $newDate = $date['year'] . '-' . $date['month'] . '-' . $date['day'];
+        $newDate = Carbon::parse($newDate)->format('Y-m-d');
+        return $newDate;
     }
 }
