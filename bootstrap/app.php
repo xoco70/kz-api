@@ -125,7 +125,7 @@ $app->router->group([
 ], function ($router) {
     require __DIR__ . '/../routes/api.php';
 });
-class_alias('Illuminate\Support\Facades\Config', 'Config');
+//class_alias('Illuminate\Support\Facades\Config', 'Config');
 $app->configure('countries');
 $app->configure('constants');
 $app->configure('options');
