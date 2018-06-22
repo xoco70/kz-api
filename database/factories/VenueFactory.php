@@ -3,7 +3,7 @@
 use App\Country;
 
 $factory->define(App\Venue::class, function (Faker\Generator $faker) {
-    $countries = Country::pluck('id')->toArray();
+//    $countries = Country::pluck('id')->toArray();
 
     return [
         'venue_name' => $faker->colorName,
@@ -12,7 +12,7 @@ $factory->define(App\Venue::class, function (Faker\Generator $faker) {
         'city' => $faker->city,
         'CP' => $faker->postcode,
         'state' => $faker->colorName,
-        'country_id' => $faker->randomElement($countries),
+        'country_id' => 484,
         'latitude' => $faker->latitude,
         'longitude' => $faker->longitude
     ];

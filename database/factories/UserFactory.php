@@ -3,7 +3,7 @@
 use App\Country;
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
-    $countries = Country::pluck('id')->toArray();
+//    $countries = Country::pluck('id')->toArray();
 
     $email = $faker->email;
     return [
@@ -14,7 +14,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $email,
         'password' => app('hash')->make(str_random(10)),
         'grade_id' => $faker->numberBetween(1, 5),
-        'country_id' => $faker->randomElement($countries),
+//        'country_id' => $faker->randomElement($countries),
         'city' => $faker->city,
         'latitude' => $faker->latitude,
         'longitude' => $faker->longitude,

@@ -30,11 +30,11 @@ class CreateFederationTable extends Migration {
 				->onUpdate('cascade')
 				->onDelete('cascade');
 
-			$table->foreign('country_id')
-				->references('id')
-				->on('countries')
-				->onUpdate('cascade')
-				->onDelete('cascade');
+//			$table->foreign('country_id')
+//				->references('id')
+//				->on('countries')
+//				->onUpdate('cascade')
+//				->onDelete('cascade');
 
 
 
