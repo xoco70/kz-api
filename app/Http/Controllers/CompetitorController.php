@@ -11,7 +11,6 @@ use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-
 class CompetitorController extends Controller
 {
     /**
@@ -68,13 +67,13 @@ class CompetitorController extends Controller
                 ? $competitor['email']
                 : $request->auth->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
             $lastname = $competitor['lastname'] ?? '';
-
             $user = Competitor::createUser([
                 'firstname' => $firstname,
                 'lastname' => $lastname,
                 'name' => $firstname . " " . $lastname,
                 'email' => $email
             ]);
+
 
             $championships = $user->championships();
 //            // If user has not registered yet this championship
@@ -91,7 +90,7 @@ class CompetitorController extends Controller
                 $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
             }
         }
-        return response()->json(['competitors' => $competitors, 'code' => 200]);
+        return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'code' => 200]);
     }
 
     /**
