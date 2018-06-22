@@ -15,7 +15,7 @@ class SetupCountriesTable extends Migration {
 	public function up()
 	{
 		// Creates the users table
-		Schema::create(Config::get('countries.table_name'), function(Blueprint $table)
+		Schema::create(config('countries.table_name'), function(Blueprint $table)
 		{
 		    $table->integer('id')->unsigned()->index();
 		    $table->string('capital', 255)->nullable();
@@ -49,7 +49,7 @@ class SetupCountriesTable extends Migration {
 	public function down()
 	{
         setFKCheckOff();
-		Schema::drop(Config::get('countries.table_name'));
+		Schema::drop(config('countries.table_name'));
         setFKCheckOn();
 	}
 

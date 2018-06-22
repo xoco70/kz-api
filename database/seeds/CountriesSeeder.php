@@ -15,14 +15,14 @@ class CountriesSeeder extends Seeder {
     {
         $this->command->info('Countries seeding!');
         //Empty the countries table
-        DB::table(Config::get('countries.table_name'))->delete();
+        DB::table(config('countries.table_name'))->delete();
 
         //Get all of the countries
         $countries = new Countries();
 
         $countries = $countries->getList();
         foreach ($countries as $countryId => $country){
-            DB::table(Config::get('countries.table_name'))->insert(array(
+            DB::table(config('countries.table_name'))->insert(array(
                 'id' => $countryId,
                 'capital' => ((isset($country['capital'])) ? $country['capital'] : null),
                 'citizenship' => ((isset($country['citizenship'])) ? $country['citizenship'] : null),
