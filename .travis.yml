@@ -8,6 +8,7 @@ php:
 
 before_script:
   - cp .env.travis .env
+  - touch database/sqlite.db
   - composer self-update
   - composer install --no-interaction
 
