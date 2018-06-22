@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Championship;
 use App\FightersGroup;
 use App\Grade;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
-use Xoco70\LaravelTournaments\Exceptions\TreeGenerationException;
 
 class TreeController extends Controller
 {
@@ -17,10 +17,10 @@ class TreeController extends Controller
      * @param Request $request
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function index($slug)
+    public function index(Request $request, $slug)
     {
-        $tournament = FightersGroup::getTournament($slug);
-        return $tournament;
+        $request->request->add(['slug' => $slug]);
+        return FightersGroup::getTournament($request);
     }
 
     /**
@@ -35,17 +35,15 @@ class TreeController extends Controller
 
         $tournament = FightersGroup::getTournament($request); // Builder
 
-        if ($request->auth->cannot('store', [FightersGroup::class, $tournament])) {
-            throw new AuthorizationException();
-        }
         foreach ($tournament->championships as $championship) {
-            $generation = $championship->chooseGenerationStrategy();
 
+            $generation = $championship->chooseGenerationStrategy();
+            //TODO Generation has twice the setting Object, once in championship, and once in root
             try {
                 $generation->run();
-                flash()->success(trans('msg.championships_tree_generation_success'));
-            } catch (TreeGenerationException $e) {
-                flash()->error($e->message);
+                return response()->json(['msg' => 'msg.championships_tree_generation_success', 'status' => 200]);
+            } catch (Exception $e) {
+                return response()->json(['msg' => $e->getMessage()],$e->getCode());
             }
         }
 

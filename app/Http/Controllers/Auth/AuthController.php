@@ -62,13 +62,7 @@ class AuthController
         // Find the user by email
         $user = User::where('email', $this->request->input('email'))->first();
         if (!$user) {
-            // You wil probably have some sort of helpers or whatever
-            // to make sure that you have the same response format for
-            // differents kind of responses. But let's return the
-            // below respose for now.
-            return response()->json([
-                'error' => 'Email does not exist.'
-            ], 400);
+            return response()->json('login.wrong_email', 400);
         }
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
@@ -77,8 +71,6 @@ class AuthController
             ], 200);
         }
         // Bad Request response
-        return response()->json([
-            'error' => 'Email or password is wrong.'
-        ], 400);
+        return response()->json('login.wrong_password', 400);
     }
 }

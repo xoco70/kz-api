@@ -54,43 +54,47 @@ class CompetitorController extends Controller
      */
     public function store(Request $request, $championshipId)
     {
-        $competitors = $request->competitors;
-        $championship = Championship::findOrFail($championshipId);
-        $tournament = $championship->tournament;
+        try {
+            $competitors = $request->competitors;
+            $championship = Championship::findOrFail($championshipId);
+            $tournament = $championship->tournament;
 
-        //TODO Should first validate competitors
-        foreach ($competitors as $competitor) {
-            ;
-            $firstname = $competitor['firstname'];
-
-            $email = $competitor['email'] != null
-                ? $competitor['email']
-                : $request->auth->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
-            $lastname = $competitor['lastname'] ?? '';
-            $user = Competitor::createUser([
-                'firstname' => $firstname,
-                'lastname' => $lastname,
-                'name' => $firstname . " " . $lastname,
-                'email' => $email
-            ]);
+            //TODO Should first validate competitors
+            foreach ($competitors as $competitor) {
+                $firstname = $competitor['firstname'];
+                $email = $competitor['email'] != null
+                    ? $competitor['email']
+                    : $request->auth->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
+                $lastname = $competitor['lastname'] ?? '';
+                $user = Competitor::createUser([
+                    'firstname' => $firstname,
+                    'lastname' => $lastname,
+                    'name' => $firstname . " " . $lastname,
+                    'email' => $email
+                ]);
 
 
-            $championships = $user->championships();
+                $championships = $user->championships();
 //            // If user has not registered yet this championship
-            if (!$championships->get()->contains($championship)) {
-                // Get Competitor Short ID
-                $categories = $tournament->championships->pluck('id');
-                $shortId = Competitor::getShortId($categories, $tournament, $user);
-                $championships->attach($championshipId, ['confirmed' => 0, 'short_id' => $shortId]);
+                if (!$championships->get()->contains($championship)) {
+                    // Get Competitor Short ID
+                    $categories = $tournament->championships->pluck('id');
+                    $shortId = Competitor::getShortId($categories, $tournament, $user);
+                    $championships->attach($championshipId, ['confirmed' => 0, 'short_id' => $shortId]);
+                }
+                //TODO Should add a test for this
+                // We send him an email with detail (and user /password if new)
+                if (!strpos($email, '@kendozone.com')) { // Substring is not present
+                    $code = app(Invite::class)->generateTournamentInvite($user->email, $tournament);
+                    $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
+                }
             }
-            //TODO Should add a test for this
-            // We send him an email with detail (and user /password if new)
-            if (!strpos($email, '@kendozone.com')) { // Substring is not present
-                $code = app(Invite::class)->generateTournamentInvite($user->email, $tournament);
-                $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
-            }
+            return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'msg' => 'msg.competitors_added_successful'], 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), $e->getCode());
         }
-        return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'code' => 200]);
+
+
     }
 
     /**
@@ -103,9 +107,10 @@ class CompetitorController extends Controller
     {
         try {
             Competitor::destroy($competitorId);
-            return response()->json(['msg' => trans('msg.user_delete_successful'), 'status' => 'success']);
+            return response()->json('msg.user_delete_successful', 200);
         } catch (\Exception $e) {
-            return response()->json(['msg' => $e->getMessage(), 'status' => 'error']);
+            //TODO May not work, and return a big HTML
+            return response()->json($e->getMessage(), $e->getCode());
         }
     }
 }

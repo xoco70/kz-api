@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
+
 class FightersGroup extends \Xoco70\LaravelTournaments\Models\FightersGroup
 {
     /**
@@ -9,14 +11,13 @@ class FightersGroup extends \Xoco70\LaravelTournaments\Models\FightersGroup
      * @param $request
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public static function getTournament($param)
+    public static function getTournament(Request $request)
     {
-        $tournament = null;
-        if (is_int($param)) {
-            return static::getTournamentFromChampionship($param);
+        if ($request->has('slug')) { // param is a Tournament Slug
+            return static::getTournamentFromTournament($request->slug);
         }
-        return static::getTournamentFromTournament($param);
-
+        // param is a Championship Id
+        return static::getTournamentFromChampionship($request->id);
     }
 
     public static function getTournamentFromChampionship($id)

@@ -22,17 +22,19 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->get('/categories', 'CategoryController@index');
         $router->post('/categories', 'CategoryController@store');
 
-
-        $router->post('/tournaments/{slug}/competitors', 'CompetitorController@store');
-        $router->delete('/tournaments/{slug}/competitors/{id}', 'CompetitorController@destroy');
-
         $router->get('/tournaments/{slug}/competitors', 'CompetitorController@index');
         $router->post('/championships/{id}/competitors', 'CompetitorController@store');
+        $router->delete('/tournaments/{slug}/competitors/{id}', 'CompetitorController@destroy');
 
         $router->post('/championships/{championshipId}/settings', 'ChampionshipSettingsController@store');
         $router->put('/championships/{championshipId}/settings/{id}', 'ChampionshipSettingsController@update');
 
         $router->get('/tournaments/{slug}/trees', 'TreeController@index');
+        $router->post('/championships/{championshipId}/trees', 'TreeController@store');
+
+        $router->get('/users', 'UserController@index');
+        $router->get('/users/{slug}/edit', 'UserController@edit');
+        $router->get('/users/{slug}', 'UserController@post');
     }
 );
 
