@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $this->command->info('Users seeding!');
         $faker = Faker::create();
 
-        $countries = Country::pluck('id')->toArray();
+//        $countries = Country::pluck('id')->toArray();
 
         factory(User::class)->create(
             ['name' => 'root',
@@ -30,14 +30,14 @@ class UserSeeder extends Seeder
         factory(User::class)->create(
             ['name' => 'federation',
                 'email' => 'federation@kendozone.dev',
-                'country_id' => $faker->randomElement($countries),
+//                'country_id' => $faker->randomElement($countries),
                 'role_id' => Config::get('constants.ROLE_FEDERATION_PRESIDENT'),
                 'password' => app('hash')->make('federation'),
                 'verified' => 1,]); // Federation Random Country : Pass federation
         factory(User::class)->create(
             ['name' => 'association',
                 'email' => 'association@kendozone.dev',
-                'country_id' => $faker->randomElement($countries),
+//                'country_id' => $faker->randomElement($countries),
                 'role_id' => Config::get('constants.ROLE_ASSOCIATION_PRESIDENT'),
                 'password' => app('hash')->make('association'),
                 'verified' => 1,]);
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
         factory(User::class)->create(
             ['name' => 'user',
                 'email' => 'user@kendozone.dev',
-                'country_id' => $faker->randomElement($countries),
+//                'country_id' => $faker->randomElement($countries),
                 'role_id' => Config::get('constants.ROLE_USER'),
                 'password' => app('hash')->make('user'),
                 'verified' => 1,]);

@@ -43,11 +43,6 @@ class CreateUsersTable extends Migration
                 ->on('roles')
                 ->onUpdate('cascade');
 
-            $table->foreign('country_id')
-                ->references('id')
-                ->on('countries')
-                ->onUpdate('cascade');
-
             $table->foreign('grade_id')
                 ->references('id')
                 ->on('grade')
