@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Cache;
 
 class Country extends Model
 {
-
-    public $timestamps = true;
-    protected $table = 'countries';
-
     //TODO Should replace it loading it from json
     public static function getAll()
     {
