@@ -87,18 +87,18 @@ class TournamentController extends Controller
     public function store()
     {
         $categoriesSelected = $this->request->categoriesSelected;
-        $rule_id = $this->request->rule_id;
+        $ruleId = $this->request->rule_id;
         $request = $this->request->except('categoriesSelected');
         $request['dateIni'] = Tournament::parseDate($this->request->dateIni);
         $request['dateFin'] = Tournament::parseDate($this->request->dateFin);
         $request['registerDateLimit'] = Carbon::now()->addMonth(3)->format('Y-m-d');
         $tournament = $this->request->auth->tournaments()->create($request);
         // No presets,
-        if ($rule_id == 1) {
+        if ($ruleId == 0) {
             $tournament->categories()->sync($categoriesSelected);
             return $tournament;
         }
-        $tournament->setAndConfigureCategories($rule_id);
+        $tournament->setAndConfigureCategories($ruleId);
         return $tournament;
     }
 

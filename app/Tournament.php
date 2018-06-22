@@ -294,10 +294,7 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
      */
     public function setAndConfigureCategories($ruleId)
     {
-        if ($ruleId == 0) return; // No Rules Selected
-
         $options = $this->loadRulesOptions($ruleId);
-
         // Create Tournament Categories
         $arrCategories = array_keys($options);
         $this->categories()->sync($arrCategories);
@@ -316,7 +313,7 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
      * @param $ruleId
      * @return mixed|null
      */
-    private function loadRulesOptions($ruleId)
+    public function loadRulesOptions($ruleId)
     {
         switch ($ruleId) {
             case 0: // No preset selected
