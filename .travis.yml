@@ -8,9 +8,10 @@ php:
 
 before_script:
   - cp .env.travis .env
-  - touch database/sqlite.db
   - composer self-update
   - composer install --no-interaction
+  - touch database/sqlite.db
+  - php artisan migrate --seed
 
 script:
   - vendor/bin/phpunit
