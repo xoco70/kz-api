@@ -313,7 +313,7 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
      * @param $ruleId
      * @return mixed|null
      */
-    public function loadRulesOptions($ruleId)
+    private function loadRulesOptions($ruleId)
     {
         switch ($ruleId) {
             case 0: // No preset selected
