@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\Country;
 use App\Exceptions\InvitationNeededException;
 use App\Grade;
 use App\Http\Resources\TournamentResource;

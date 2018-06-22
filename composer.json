@@ -25,7 +25,6 @@
     "torann/geoip": "^1.0",
     "urameshibr/lumen-form-request": "^1.4",
     "vlucas/phpdotenv": "~2.2",
-    "webpatser/laravel-countries": "dev-develop",
     "xoco70/laravel-tournaments": "dev-master"
   },
   "require-dev": {
