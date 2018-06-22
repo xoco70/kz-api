@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 class UserRequest extends Request

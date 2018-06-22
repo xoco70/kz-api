@@ -5,7 +5,6 @@ namespace App;
 use App\Notifications\InviteCompetitor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use OwenIt\Auditing\Contracts\Auditable;
 
 
 class Invite extends Model // removed auditable, was looking for session, not stateless

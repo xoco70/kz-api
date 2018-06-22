@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Invite;
 use App\Tournament;
-use Illuminate\Support\Facades\Auth;
 
 class ChampionshipRequest extends Request
 {

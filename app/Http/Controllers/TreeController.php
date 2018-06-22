@@ -7,7 +7,6 @@ use App\FightersGroup;
 use App\Grade;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Xoco70\LaravelTournaments\Exceptions\TreeGenerationException;
 
 class TreeController extends Controller

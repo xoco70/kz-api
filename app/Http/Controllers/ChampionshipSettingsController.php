@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use App\FightersGroup;
 use DaveJamesMiller\Breadcrumbs\Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 
 class ChampionshipSettingsController extends Controller

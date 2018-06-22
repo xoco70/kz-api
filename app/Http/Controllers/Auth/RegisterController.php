@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Grade;
 use App\Http\Controllers\Controller;
-use App\Invite;
 use App\Notifications\AccountRegistered;
-use App\Tournament;
 use App\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Validator;
 
 class RegisterController extends Controller

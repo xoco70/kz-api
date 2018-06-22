@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Http\Requests\CategoryRequest;
 use App\TournamentLevel;
-use Illuminate\Http\Request;
 
 
 class TournamentLevelController extends Controller

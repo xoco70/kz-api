@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\User;
 use Closure;
 use Exception;
-use App\User;
-use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
 
 class JwtMiddleware
 {

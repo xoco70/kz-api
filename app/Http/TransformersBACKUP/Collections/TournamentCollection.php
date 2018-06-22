@@ -1,4 +1,5 @@
 <?php
+
 use League\Fractal;
 
 $tournaments = Tournament::all();

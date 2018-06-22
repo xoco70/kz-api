@@ -1,4 +1,5 @@
 <?php
+
 use App\Association;
 use App\Federation;
 use App\User;

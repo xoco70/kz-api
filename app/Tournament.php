@@ -5,7 +5,6 @@ namespace App;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 use Illuminate\Support\Carbon;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 

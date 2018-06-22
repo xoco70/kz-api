@@ -4,7 +4,6 @@ namespace App\Http\Transformers;
 use App\Tournament;
 use App\User;
 use League\Fractal;
-use App\Http\Transformers\VenueTransformer;
 
 
 class TournamentTransformer extends Fractal\TransformerAbstract

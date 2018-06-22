@@ -3,9 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
-use OwenIt\Auditing\Contracts\Auditable;
 use stdClass;
 
 class Association extends Model

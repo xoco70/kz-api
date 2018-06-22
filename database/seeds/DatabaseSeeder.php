@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->truncate();
 
 
-        $this->call(CountriesSeeder::class);
         $this->call(VenueSeeder::class);
         $this->call(GradeSeeder::class);
         $this->call(RoleSeeder::class);

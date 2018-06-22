@@ -1,4 +1,5 @@
 <?php
+
 use App\Country;
 use App\User;
 

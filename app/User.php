@@ -111,28 +111,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * Add geoData based on IP
-     */
-    public function addGeoData()
-    {
-        $ip = Request::ip();
-        $location = geoip($ip);
-        $country = Country::where('name', '=', $location->country)->first();
-        if (is_null($country)) {
-            $this->country_id = config('constants.COUNTRY_ID_DEFAULT');
-            $this->city = "Paris";
-            $this->latitude = 48.858222;
-            $this->longitude = 2.2945;
-            return;
-        }
-        $this->country_id = $country->id;
-        $this->city = $location['city'];
-        $this->latitude = $location['lat'];
-        $this->longitude = $location['lon'];
-    }
-
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function grade()
@@ -162,14 +140,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function invites()
     {
         return $this->hasMany('App\Invite', 'email', 'email');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function country()
-    {
-        return $this->belongsTo('Webpatser\Countries\Countries');
     }
 
     /**
