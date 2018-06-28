@@ -83,9 +83,10 @@ class TournamentController extends Controller
         try {
             $this->validate($this->request, [
                 'name' => 'required',
-                'dateIni' => 'required|date',
-                'dateFin' => 'required|date',
-                'categoriesSelected' => 'required'
+                'dateIni' => 'required',
+                'dateFin' => 'required',
+                'rule_id' => 'required',
+                'categoriesSelected' => 'required',
             ]);
             $categoriesSelected = $this->request->categoriesSelected;
             $ruleId = $this->request->rule_id;

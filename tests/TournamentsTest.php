@@ -65,7 +65,6 @@ class TournamentsTest extends TestCase
     /** @test */
     public function it_denies_creating_an_empty_tournament()
     {
-        $faker = Faker\Factory::create();
         $payload = [
             'name' => '',
             'rule_id' => 0,
@@ -75,58 +74,29 @@ class TournamentsTest extends TestCase
         $this->assertEquals(HttpResponse::HTTP_UNPROCESSABLE_ENTITY, $response->status());
     }
 
-//    /** @test */
-//    public function mustBeAuthenticated()
-//    {
-//        Auth::logout();
-//        $this->visit('/tournaments')
-//            ->seePageIs('/login');
-//    }
-//
-    /** @test */
 
-//
-//    /** @test */
-//    public function it_create_tournament_with_rules()
-//    {
-//        Artisan::call('db:seed', ['--class' => 'CategorySeeder', '--database' => 'sqlite']);
-//        Artisan::call('db:seed', ['--class' => 'CountriesSeeder', '--database' => 'sqlite']);
-//
-//        $this->visit('/')
-//            ->click(trans('core.createTournament'))
-//            ->type('MyTournament', 'name')
-//            ->type('2015-12-12', 'dateIni')
-//            ->type('2015-12-12', 'dateFin')
-//            ->select(1, 'rule_id')
-//            ->press(trans('core.addModel', ['currentModelName' => trans_choice('core.tournament', 1)]))
-//            ->seeInDatabase('tournament', ['name' => 'MyTournament']);
-//
-//        $categoriesAdded = array_keys(config('options.ikf_settings'));
-//        // See categories is added
-//        $tournament = Tournament::where("name", "MyTournament")->first();
-//        $championships = Championship::where("tournament_id", '=', $tournament->id)->get();
-//        foreach ($championships as $championship) {
-//            $this->assertContains($championship->category_id, $categoriesAdded);
-//            //TODO We could check the content of the setting
-//            $this->seeInDatabase('championship_settings',
-//                ['championship_id' => $championship->id,
-//                ]);
-//
-//        }
-//
-//
-//    }
-//
-//
-//    public function storeInput($element, $text, $force = false)
-//    {
-//        if ($force) {
-//            $this->inputs[$element] = $text;
-//            return $this;
-//        } else {
-//            return parent::storeInput($element, $text);
-//        }
-//    }
+    /** @test */
+    public function it_create_ikf_tournament()
+    {
+        $faker = Faker\Factory::create();
+        $dateIni['year'] = $faker->year;
+        $dateIni['month'] = $faker->month;
+        $dateIni['day'] = $faker->dayOfMonth;
+        $payload = [
+            'name' => $faker->word,
+            'rule_id' => 1,
+            'dateIni' => $dateIni,
+            'dateFin' => $dateIni,
+            'categoriesSelected' => [''],
+
+        ];
+        $this->call('POST', '/tournaments', $payload);
+        $this->assertResponseOk();
+        $this->seeInDatabase('tournament', ['name' => $payload['name']]);
+        $tournament = Tournament::where('name', $payload['name'])->first();
+        $this->assertEquals(4,$tournament->championships->count());
+        $this->assertEquals(4,$tournament->championshipSettings->count());
+    }
 //
 //    /** @test
 //     * @param null $tournament
