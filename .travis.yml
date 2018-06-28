@@ -12,6 +12,7 @@ before_script:
   - composer install --no-interaction
   - touch database/sqlite.db
   - php artisan migrate --seed
+  - php artisan jwt:secret
 
 script:
   - vendor/bin/phpunit
