@@ -6,6 +6,10 @@ namespace app\Http\Controllers\Auth;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Http\Response as HttpResponse;
+
 
 class AuthController
 {
@@ -61,14 +65,12 @@ class AuthController
         // Find the user by email
         $user = User::where('email', $this->request->input('email'))->first();
         if (!$user) {
-            return response()->json('login.wrong_email', 400);
+            return response()->json('login.wrong_email', HttpResponse::HTTP_UNAUTHORIZED);
         }
-        // Verify the password and generate the token
-        if (Hash::check($this->request->input('password'), $user->password)) {
-            $token = app('auth')->attempt($this->request->only('email', 'password'));
-            return response()->json(compact('token'), 200);
+        $credentials = Input::only('email', 'password');
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json('login.wrong_password', HttpResponse::HTTP_UNAUTHORIZED);
         }
-        // Bad Request response
-        return response()->json('login.wrong_password', 400);
+        return response()->json(compact('token'), HttpResponse::HTTP_ACCEPTED);
     }
 }

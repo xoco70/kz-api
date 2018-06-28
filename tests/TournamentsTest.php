@@ -1,28 +1,38 @@
 <?php
 
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Illuminate\Http\Response as HttpResponse;
 
 class TournamentsTest extends TestCase
 {
+
     use DatabaseTransactions;
     protected $initialTournamentNum = 6;
     protected $defaultPagintation = 25;
 
-    /** @test */
-    public function tournament_index_pagination_metadata()
-    {
-        $numTournaments = 25;
-        factory('App\Tournament', $numTournaments)->create();
-        $total = $numTournaments + $this->initialTournamentNum;
-        $response = $this->call('GET', '/tournaments');
-        $this->assertResponseOk();
-        $json = json_decode($response->getContent());
-        $this->assertEquals($json->meta->last_page, ceil($total / $this->defaultPagintation));
-        $this->assertEquals($json->meta->total, $total);
-        $this->assertEquals($json->links->first, $this->baseUrl . "/tournaments?page=1");
-        $this->assertEquals($json->links->last, $this->baseUrl . "/tournaments?page=2");
 
-    }
+//    /** @test */
+//    public function cant_access_route_without_token()
+//    {
+//        $response = $this->call('GET', '/tournaments');
+//        // I should be blocked
+//        $this->assertEquals(HttpResponse::HTTP_UNAUTHORIZED, $response->status());
+//    }
+//    /** @test */
+//    public function tournament_index_pagination_metadata()
+//    {
+//        $numTournaments = 25;
+//        factory('App\Tournament', $numTournaments)->create();
+//        $total = $numTournaments + $this->initialTournamentNum;
+//        $response = $this->call('GET', '/tournaments');
+//        $this->assertResponseOk();
+//        $json = json_decode($response->getContent());
+//        $this->assertEquals($json->meta->last_page, ceil($total / $this->defaultPagintation));
+//        $this->assertEquals($json->meta->total, $total);
+//        $this->assertEquals($json->links->first, $this->baseUrl . "/tournaments?page=1");
+//        $this->assertEquals($json->links->last, $this->baseUrl . "/tournaments?page=2");
+//
+//    }
 
     /** @test */
 //    public function it_create_tournament_manually()
