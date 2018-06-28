@@ -90,8 +90,8 @@ class CompetitorController extends Controller
                 }
             }
             return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'msg' => 'msg.competitors_added_successful'], 200);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), $e->getCode());
+        } catch (\Exception $e) {;
+            return response()->json($e->getLine(), $e->getCode());
         }
 
 

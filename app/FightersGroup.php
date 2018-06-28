@@ -28,11 +28,11 @@ class FightersGroup extends \Xoco70\LaravelTournaments\Models\FightersGroup
             ->with(['championships' => function ($query) use ($id) {
                 $query->where('id', '=', $id)
                     ->with([
+                        'competitors.user',
                         'settings',
                         'category',
-                        'users',
                         'fightersGroups' => function ($query) {
-                            return $query->with('teams', 'competitors', 'fights');
+                            return $query->with('fights','teams', 'competitors.user');
                         }]);
             }])
             ->firstOrFail();
@@ -42,11 +42,11 @@ class FightersGroup extends \Xoco70\LaravelTournaments\Models\FightersGroup
     {
         return Tournament::with(['championships' => function ($query) use ($slug) {
             $query->with([
+                'competitors.user',
                 'settings',
                 'category',
-                'users',
                 'fightersGroups' => function ($query) {
-                    return $query->with('teams', 'competitors', 'fights');
+                    return $query->with('fights','teams', 'competitors.user');
                 }]);
         }])->withCount('competitors', 'teams')
             ->where('slug', $slug)->firstOrFail();

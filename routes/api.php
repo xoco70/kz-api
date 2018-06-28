@@ -8,7 +8,7 @@ $router->get('register/confirm/{token}', 'Auth\RegisterController@confirm');
 $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 //$this->post('password/reset', 'Auth\ResetPasswordController@reset');
 
-
+$router->get('/tournaments/{slug}/fights', 'FightController@index');
 $router->group(['middleware' => 'jwt.auth'],
     function () use ($router) {
         $router->get('/tournaments', 'TournamentController@index');

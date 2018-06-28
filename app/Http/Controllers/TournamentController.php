@@ -93,7 +93,7 @@ class TournamentController extends Controller
             $tournament->setAndConfigureCategories($ruleId);
             return response()->json($tournament, 200);
         } catch (Exception $e) {
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->json($e->getMessage(), 422);
         }
     }
 
