@@ -13,6 +13,7 @@ before_script:
   - touch database/sqlite.db
   - php artisan migrate --seed
   - php artisan jwt:secret
+  - php artisan key:generate
 
 script:
   - vendor/bin/phpunit
