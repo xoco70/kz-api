@@ -65,12 +65,14 @@ $app->middleware([
 ]);
 
 
-$app->routeMiddleware([
-    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
-]);
+//$app->routeMiddleware([
+//    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+//]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'jwt.auth' => Tymon\JWTAuth\Http\Middleware\GetUserFromToken::class,
+    'jwt.refresh' => Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
 ]);
 
 /*
@@ -106,6 +108,7 @@ if ($app->environment() !== 'production') {
 
 $app->register(Barryvdh\Snappy\LumenServiceProvider::class);
 
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
 
 

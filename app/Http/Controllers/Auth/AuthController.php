@@ -4,7 +4,6 @@ namespace app\Http\Controllers\Auth;
 
 
 use App\User;
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,25 +27,25 @@ class AuthController
         $this->request = $request;
     }
 
-    /**
-     * Create a new token.
-     *
-     * @param  \App\User $user
-     * @return string
-     */
-    protected function jwt(User $user)
-    {
-        $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token
-            'sub' => $user, // Subject of the token
-            'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60 // Expiration time
-        ];
-
-        // As you can see we are passing `JWT_SECRET` as the second parameter that will
-        // be used to decode the token in the future.
-        return JWT::encode($payload, env('JWT_SECRET'));
-    }
+//    /**
+//     * Create a new token.
+//     *
+//     * @param  \App\User $user
+//     * @return string
+//     */
+//    protected function jwt(User $user)
+//    {
+//        $payload = [
+//            'iss' => "lumen-jwt", // Issuer of the token
+//            'sub' => $user, // Subject of the token
+//            'iat' => time(), // Time when JWT was issued.
+//            'exp' => time() + 60 * 60 // Expiration time
+//        ];
+//
+//        // As you can see we are passing `JWT_SECRET` as the second parameter that will
+//        // be used to decode the token in the future.
+//        return JWT::encode($payload, env('JWT_SECRET'));
+//    }
 
     /**
      * Authenticate a user and return the token if the provided credentials are correct.
@@ -66,9 +65,8 @@ class AuthController
         }
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
-            return response()->json([
-                'token' => $this->jwt($user)
-            ], 200);
+            $token = app('auth')->attempt($this->request->only('email', 'password'));
+            return response()->json(compact('token'), 200);
         }
         // Bad Request response
         return response()->json('login.wrong_password', 400);

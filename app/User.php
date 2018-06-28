@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @property  mixed name
@@ -27,7 +28,7 @@ use Illuminate\Support\Collection;
  * @property Club clubOwned
  * @property int id
  */
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, JWTSubject
 {
     use Authenticatable, CanResetPassword, SoftDeletes, RoleTrait, Notifiable, Sluggable;
 
@@ -251,5 +252,25 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return asset(config('constants.AVATAR_PATH') . $avatar);
         }
         return $avatar;
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
