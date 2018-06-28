@@ -11,13 +11,11 @@ class TournamentsTest extends TestCase
     protected $defaultPagintation = 25;
 
 
-//    /** @test */
-//    public function cant_access_route_without_token()
-//    {
-//        $response = $this->call('GET', '/tournaments');
-//        // I should be blocked
-//        $this->assertEquals(HttpResponse::HTTP_UNAUTHORIZED, $response->status());
-//    }
+    /** @test */
+    public function dummyTesst()
+    {
+        return true;
+    }
 //    /** @test */
 //    public function tournament_index_pagination_metadata()
 //    {
