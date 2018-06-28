@@ -17,7 +17,6 @@ class LoginTest extends TestCase
     {
 
         $response = $this->call('GET', '/tournaments');
-        dd($response);
         // I should be blocked
         $this->assertEquals(HttpResponse::HTTP_UNAUTHORIZED, $response->status());
     }
