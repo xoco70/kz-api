@@ -1,7 +1,6 @@
 <?php
 
 use App\Tournament;
-use App\User;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
 use Tests\Concerns\AttachJwtToken;
@@ -57,55 +56,24 @@ class TournamentsTest extends TestCase
         $this->assertResponseOk();
         $this->seeInDatabase('tournament', ['name' => $payload['name']]);
         $tournament = Tournament::where('name', $payload['name'])->first();
-        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id'=> 2]);
-        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id'=> 3]);
-        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id'=> 4]);
+        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 2]);
+        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 3]);
+        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 4]);
 
-        // Get Tournament Id
-//         $json = json_decode($response->getContent());
-        // $json->data->id;
-//        $this->seeInDatabase('tournaments', [
-//            'userId' => null,
-//            'name' => 'test',
-//            'dateIni' => '01/01/1979',
-//            'dateFin' => '01/01/1979',]);
-        // Check tournament exists
-        // Check Categories are OK
-
-//        $this->visit('/')
-//            ->click(trans('core.createTournament'))
-//            ->type('MyTournament', 'name')
-//            ->type('2015-12-12', 'dateIni')
-//            ->type('2015-12-12', 'dateFin')
-//            ->storeInput('category', [1, 2], true)
-//            ->press(trans('core.addModel', ['currentModelName' => trans_choice('core.tournament', 1)]))
-////            ->see(trans('msg.tournament_create_successful', ['name' => 'MyTournament']))
-//            ->seeInDatabase('tournament', ['name' => 'MyTournament']);
-//
-//        $categoriesAdded = [1, 2];
-//        // See categories is added
-//        $tournament = Tournament::where("name", "MyTournament")->first();
-//        $categories = DB::table("championship")->where("tournament_id", '=', $tournament->id)->get();
-//        foreach ($categories as $item) {
-//            $this->assertContains($item->category_id, $categoriesAdded);
-//
-//        }
     }
 
-//    /** @test */
-//    public function it_denies_creating_an_empty_tournament()
-//    {
-//        $this->visit("/tournaments")
-//            ->click(trans('core.createTournament'))
-//            ->press(trans('core.addModel', ['currentModelName' => trans_choice('core.tournament', 1)]))
-//            ->seePageIs('/tournaments/create')
-//            ->see(trans('validation.required', ['attribute' => "name"]))
-////            ->see(trans('validation.filled', ['attribute' => "dateIni"])) // It's inserting spaces
-////            ->see(trans('validation.filled', ['attribute' => "dateFin"]))
-//            ->see(trans('validation.required', ['attribute' => "category"]))
-//            ->notSeeInDatabase('tournament', ['name' => '']);
-//
-//    }
+    /** @test */
+    public function it_denies_creating_an_empty_tournament()
+    {
+        $faker = Faker\Factory::create();
+        $payload = [
+            'name' => '',
+            'rule_id' => 0,
+            'categoriesSelected' => [2, 3, 4],
+        ];
+        $response = $this->call('POST', '/tournaments', $payload);
+        $this->assertEquals(HttpResponse::HTTP_UNPROCESSABLE_ENTITY, $response->status());
+    }
 
 //    /** @test */
 //    public function mustBeAuthenticated()

@@ -9,6 +9,7 @@ use App\Http\Resources\TournamentResource;
 use App\Tournament;
 use App\Venue;
 use Exception;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\ValidationException;
 
 
 class TournamentController extends Controller
@@ -79,6 +81,12 @@ class TournamentController extends Controller
     public function store()
     {
         try {
+            $this->validate($this->request, [
+                'name' => 'required',
+                'dateIni' => 'required|date',
+                'dateFin' => 'required|date',
+                'categoriesSelected' => 'required'
+            ]);
             $categoriesSelected = $this->request->categoriesSelected;
             $ruleId = $this->request->rule_id;
             $request = $this->request->except('categoriesSelected');
@@ -92,8 +100,10 @@ class TournamentController extends Controller
             }
             $tournament->setAndConfigureCategories($ruleId);
             return response()->json($tournament, 200);
-        } catch (Exception $e) {
-            return response()->json($e->getMessage(), 422);
+        } catch (ValidationException $e) {
+            return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }catch (Exception $e) {
+            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
