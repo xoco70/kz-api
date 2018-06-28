@@ -15,7 +15,9 @@ class LoginTest extends TestCase
     /** @test */
     public function cant_access_route_without_token()
     {
+
         $response = $this->call('GET', '/tournaments');
+        dd($response);
         // I should be blocked
         $this->assertEquals(HttpResponse::HTTP_UNAUTHORIZED, $response->status());
     }
