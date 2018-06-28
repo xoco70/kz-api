@@ -1,36 +1,41 @@
 <?php
 
+use App\User;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
+use Tests\Concerns\AttachJwtToken;
 
 class TournamentsTest extends TestCase
 {
 
-    use DatabaseTransactions;
+    use DatabaseTransactions, AttachJwtToken;
     protected $initialTournamentNum = 6;
     protected $defaultPagintation = 25;
+    protected $user;
 
 
     /** @test */
     public function dummyTesst()
     {
-        return true;
+        $response = $this
+            ->call('GET', '/tournaments');
+        $this->assertEquals(HttpResponse::HTTP_OK, $response->status());
     }
-//    /** @test */
-//    public function tournament_index_pagination_metadata()
-//    {
-//        $numTournaments = 25;
-//        factory('App\Tournament', $numTournaments)->create();
-//        $total = $numTournaments + $this->initialTournamentNum;
-//        $response = $this->call('GET', '/tournaments');
-//        $this->assertResponseOk();
-//        $json = json_decode($response->getContent());
-//        $this->assertEquals($json->meta->last_page, ceil($total / $this->defaultPagintation));
-//        $this->assertEquals($json->meta->total, $total);
-//        $this->assertEquals($json->links->first, $this->baseUrl . "/tournaments?page=1");
-//        $this->assertEquals($json->links->last, $this->baseUrl . "/tournaments?page=2");
-//
-//    }
+    /** @test */
+    public function tournament_index_pagination_metadata()
+    {
+        $numTournaments = 25;
+        factory('App\Tournament', $numTournaments)->create();
+        $total = $numTournaments + $this->initialTournamentNum;
+        $response = $this->call('GET', '/tournaments');
+        $this->assertResponseOk();
+        $json = json_decode($response->getContent());
+        $this->assertEquals($json->meta->last_page, ceil($total / $this->defaultPagintation));
+        $this->assertEquals($json->meta->total, $total);
+        $this->assertEquals($json->links->first, $this->baseUrl . "/tournaments?page=1");
+        $this->assertEquals($json->links->last, $this->baseUrl . "/tournaments?page=2");
+
+    }
 
     /** @test */
 //    public function it_create_tournament_manually()
