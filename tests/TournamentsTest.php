@@ -15,7 +15,7 @@ class TournamentsTest extends TestCase
 
 
     /** @test */
-    public function dummyTesst()
+    public function user_can_see_tournament_list()
     {
         $response = $this
             ->call('GET', '/tournaments');
@@ -38,49 +38,51 @@ class TournamentsTest extends TestCase
     }
 
     /** @test */
-//    public function it_create_tournament_manually()
-//    {
-//
-//        $payload = [
-//            'userId' => null,
-//            'name' => 'test',
-//            'dateIni' => '01/01/1979',
-//            'dateFin' => '01/01/1979',
-//            'categories' => [2, 3, 4],
-//        ];
-//
-//        $response = $this->call('POST', '/tournaments/store', $payload);
-//        $this->assertResponseOk();
-//        // Get Tournament Id
-////         $json = json_decode($response->getContent());
-//        // $json->data->id;
+    public function it_create_tournament_manually()
+    {
+        $dateIni['year'] = 2018;
+        $dateIni['month'] = 5;
+        $dateIni['day'] = 31;
+        $payload = [
+            'name' => 'test',
+            'rule_id' => 0,
+            'dateIni' => $dateIni,
+            'dateFin' => $dateIni,
+            'categoriesSelected' => [2, 3, 4],
+        ];
+
+        $response = $this->call('POST', '/tournaments', $payload);
+        $this->assertResponseOk();
+        // Get Tournament Id
+//         $json = json_decode($response->getContent());
+        // $json->data->id;
 //        $this->seeInDatabase('tournaments', [
 //            'userId' => null,
 //            'name' => 'test',
 //            'dateIni' => '01/01/1979',
 //            'dateFin' => '01/01/1979',]);
-//        // Check tournament exists
-//        // Check Categories are OK
+        // Check tournament exists
+        // Check Categories are OK
+
+//        $this->visit('/')
+//            ->click(trans('core.createTournament'))
+//            ->type('MyTournament', 'name')
+//            ->type('2015-12-12', 'dateIni')
+//            ->type('2015-12-12', 'dateFin')
+//            ->storeInput('category', [1, 2], true)
+//            ->press(trans('core.addModel', ['currentModelName' => trans_choice('core.tournament', 1)]))
+////            ->see(trans('msg.tournament_create_successful', ['name' => 'MyTournament']))
+//            ->seeInDatabase('tournament', ['name' => 'MyTournament']);
 //
-////        $this->visit('/')
-////            ->click(trans('core.createTournament'))
-////            ->type('MyTournament', 'name')
-////            ->type('2015-12-12', 'dateIni')
-////            ->type('2015-12-12', 'dateFin')
-////            ->storeInput('category', [1, 2], true)
-////            ->press(trans('core.addModel', ['currentModelName' => trans_choice('core.tournament', 1)]))
-//////            ->see(trans('msg.tournament_create_successful', ['name' => 'MyTournament']))
-////            ->seeInDatabase('tournament', ['name' => 'MyTournament']);
-////
-////        $categoriesAdded = [1, 2];
-////        // See categories is added
-////        $tournament = Tournament::where("name", "MyTournament")->first();
-////        $categories = DB::table("championship")->where("tournament_id", '=', $tournament->id)->get();
-////        foreach ($categories as $item) {
-////            $this->assertContains($item->category_id, $categoriesAdded);
-////
-////        }
-//    }
+//        $categoriesAdded = [1, 2];
+//        // See categories is added
+//        $tournament = Tournament::where("name", "MyTournament")->first();
+//        $categories = DB::table("championship")->where("tournament_id", '=', $tournament->id)->get();
+//        foreach ($categories as $item) {
+//            $this->assertContains($item->category_id, $categoriesAdded);
+//
+//        }
+    }
 
 //    /** @test */
 //    public function it_denies_creating_an_empty_tournament()

@@ -85,7 +85,7 @@ class TournamentController extends Controller
             $request['dateIni'] = Tournament::parseDate($this->request->dateIni);
             $request['dateFin'] = Tournament::parseDate($this->request->dateFin);
             $request['registerDateLimit'] = Carbon::now()->addMonth(3)->format('Y-m-d');
-            $tournament = $this->request->auth->tournaments()->create($request);
+            $tournament = Auth::user()->tournaments()->create($request);
             if ($ruleId == 0) { // No presets,
                 $tournament->categories()->sync($categoriesSelected);
                 return response()->json($tournament, 200);
