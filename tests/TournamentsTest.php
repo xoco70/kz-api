@@ -1,5 +1,6 @@
 <?php
 
+use App\Tournament;
 use App\User;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
@@ -21,6 +22,7 @@ class TournamentsTest extends TestCase
             ->call('GET', '/tournaments');
         $this->assertEquals(HttpResponse::HTTP_OK, $response->status());
     }
+
     /** @test */
     public function tournament_index_pagination_metadata()
     {
@@ -40,19 +42,25 @@ class TournamentsTest extends TestCase
     /** @test */
     public function it_create_tournament_manually()
     {
-        $dateIni['year'] = 2018;
-        $dateIni['month'] = 5;
-        $dateIni['day'] = 31;
+        $faker = Faker\Factory::create();
+        $dateIni['year'] = $faker->year;
+        $dateIni['month'] = $faker->month;
+        $dateIni['day'] = $faker->dayOfMonth;
         $payload = [
-            'name' => 'test',
+            'name' => $faker->word,
             'rule_id' => 0,
             'dateIni' => $dateIni,
             'dateFin' => $dateIni,
             'categoriesSelected' => [2, 3, 4],
         ];
-
-        $response = $this->call('POST', '/tournaments', $payload);
+        $this->call('POST', '/tournaments', $payload);
         $this->assertResponseOk();
+        $this->seeInDatabase('tournament', ['name' => $payload['name']]);
+        $tournament = Tournament::where('name', $payload['name'])->first();
+        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id'=> 2]);
+        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id'=> 3]);
+        $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id'=> 4]);
+
         // Get Tournament Id
 //         $json = json_decode($response->getContent());
         // $json->data->id;
