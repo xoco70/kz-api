@@ -159,6 +159,9 @@ class TournamentController extends Controller
             }
 
             if ($tab == 'categories') {
+                $this->validate($this->request, [
+                    'categoriesSelected' => 'required|array|min:1',
+                ]);
                 $categories = $this->request->categoriesSelected;
                 $tournament->categories()->sync($categories);
                 return $tournament->where('slug', $slug)->with('championships.category')->first();

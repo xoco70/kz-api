@@ -5,6 +5,7 @@ use App\Competitor;
 use App\Tournament;
 use App\User;
 use App\Venue;
+use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
 use Tests\Concerns\AttachJwtToken;
@@ -123,7 +124,7 @@ class TournamentsTest extends TestCase
             'technical_assistance' => ''
         ];
         $this->json('PUT', '/tournaments/' . $tournament->slug, $payload);
-
+        $this->assertResponseOk();
         // We can't match dates because there is 00:00:00 at the end of date in DB :( Should fix it
         $this->seeInDatabase('tournament',
             [
@@ -146,8 +147,20 @@ class TournamentsTest extends TestCase
         $venue = factory(Venue::class)->make();
         $arrVenue = json_decode(json_encode($venue), true);
         $this->call('PUT', '/tournaments/' . $tournament->slug, ['venue' => $venue, 'tab' => 'venue']);
+        $this->assertResponseOk();
         $this->seeInDatabase('tournament', ['venue_id' => $venue->id]);
         $this->seeInDatabase('venue', $arrVenue);
+    }
+
+    /** @test
+     */
+    public function you_must_choose_at_least_one_category_in_tournament()
+    {
+        $categories = [];
+        $tournament = factory(Tournament::class)->create();
+        $response = $this->call('PUT', '/tournaments/' . $tournament->slug,
+            ['categoriesSelected' => $categories, 'tab' => 'categories']);
+        $this->assertEquals($response->getStatusCode(),HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /** @test */
@@ -155,12 +168,14 @@ class TournamentsTest extends TestCase
     {
         $categories = [1,3,7];
         $tournament = factory(Tournament::class)->create();
-        $this->call('PUT', '/tournaments/' . $tournament->slug,
+        $response = $this->call('PUT', '/tournaments/' . $tournament->slug,
             ['categoriesSelected' => $categories, 'tab' => 'categories']);
+        $this->assertResponseOk();
         $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 1]);
         $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 3]);
         $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 7]);
     }
+
 
 
     /** @test */
@@ -173,6 +188,7 @@ class TournamentsTest extends TestCase
         $setting = factory(ChampionshipSettings::class)->create(['championship_id' => $championship->id]);
         $competitor = factory(Competitor::class)->create(['championship_id' => $championship->id]);
         $this->call('DELETE', '/tournaments/' . $tournament->slug);
+        $this->assertResponseOk();
         // TODO This is weird, why some use notSeeInDatabase, and some use seeIsSoftDeletedInDatabase
         // Tournament use soft delete
         // Championship use soft delete in the plugin
