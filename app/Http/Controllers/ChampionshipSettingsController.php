@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\FightersGroup;
-use DaveJamesMiller\Breadcrumbs\Exception;
 use Illuminate\Http\Request;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 

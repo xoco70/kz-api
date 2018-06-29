@@ -97,13 +97,13 @@ class TournamentController extends Controller
             $tournament = Auth::user()->tournaments()->create($request);
             if ($ruleId == 0) { // No presets,
                 $tournament->categories()->sync($categoriesSelected);
-                return response()->json($tournament, 200);
+                return response()->json($tournament, HttpResponse::HTTP_OK);
             }
             $tournament->setAndConfigureCategories($ruleId);
-            return response()->json($tournament, 200);
+            return response()->json($tournament, HttpResponse::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -114,24 +114,33 @@ class TournamentController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request)
+    public function update(Request $request, $slug)
     {
-        $slug = $this->request->slug;
-        $tab = $this->request->tab;
+        $tab = $this->request->input('tab');
         try {
             $tournament = Tournament::where('slug', $slug)->first();
 
             if ($tab == 'general') {
-                $tournament->name = $this->request->name;
+                $this->validate($this->request, [
+                    'name' => 'required',
+                    'dateIni' => 'required',
+                    'dateFin' => 'required',
+                ]);
+                $tournament->name = $this->request->input('name');
+
                 // Build date from Json
-                $tournament->dateIni = Tournament::parseDate($this->request->dateIni);
-                $tournament->dateFin = Tournament::parseDate($this->request->dateFin);
-                $tournament->registerDateLimit = Tournament::parseDate($this->request->registerDateLimit);
-                $tournament->promoter = $this->request->promoter;
-                $tournament->host_organization = $this->request->host_organization;
-                $tournament->technical_assistance = $this->request->technical_assistance;
+                $tournament->dateIni = Tournament::parseDate($this->request->input('dateIni'));
+                $tournament->dateFin = Tournament::parseDate($this->request->input('dateFin'));
+                $tournament->registerDateLimit = Tournament::parseDate($this->request->input('registerDateLimit'));
+                $tournament->promoter = $this->request->input('promoter');
+                $tournament->host_organization = $this->request->input('host_organization');
+                $tournament->technical_assistance = $this->request->input('technical_assistance');
             }
             if ($tab == 'venue') {
+                $this->validate($this->request, [
+                    'venue.venue_name' => 'required',
+                    'venue.address' => 'required',
+                ]);
                 $venue = $tournament->venue;
                 if ($venue == null) $venue = new Venue;
                 $venue->fill([
@@ -154,9 +163,11 @@ class TournamentController extends Controller
                 $tournament->categories()->sync($categories);
                 return $tournament->where('slug', $slug)->with('championships.category')->first();
             }
-            return response()->json($tournament->save(), 200);
+            return response()->json($tournament->save(), HttpResponse::HTTP_OK);
+        } catch (ValidationException $e) {
+            return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
-            return response()->json($e->getMessage(), 422);
+            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -170,8 +181,8 @@ class TournamentController extends Controller
     {
         try {
             $tournament = Tournament::where('slug', $slug)->first();
-            if (!$tournament) return response()->json('tournaments.wrong_tournament', 422);
-            return response()->json($tournament->delete(), 200);
+            if (!$tournament) return response()->json('tournaments.wrong_tournament', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json($tournament->delete(), HttpResponse::HTTP_OK);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }
