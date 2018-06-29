@@ -51,6 +51,7 @@ class TournamentController extends Controller
 
     /**
      * Display a listing of the resource
+     * TODO Don't know how to test it
      */
     public function edit($slug)
     {
@@ -191,20 +192,20 @@ class TournamentController extends Controller
         }
     }
 
-    /**
-     * @param $tournamentSlug
-     * @return JsonResponse
-     */
-    public function restore($tournamentSlug)
-    {
-        $tournament = Tournament::withTrashed()->whereSlug($tournamentSlug)->first();
-        if ($tournament->restore()) {
-            return Response::json(['msg' => Lang::get('msg.tournament_restored_successful', ['name' => $tournament->name]), 'status' => 'success']);
-        }
-
-        return Response::json(['msg' => Lang::get('msg.tournament_restored_error', ['name' => $tournament->name]), 'status' => 'error']);
-
-    }
+//    /**
+//     * @param $tournamentSlug
+//     * @return JsonResponse
+//     */
+//    public function restore($tournamentSlug)
+//    {
+//        $tournament = Tournament::withTrashed()->whereSlug($tournamentSlug)->first();
+//        if ($tournament->restore()) {
+//            return Response::json(['msg' => Lang::get('msg.tournament_restored_successful', ['name' => $tournament->name]), 'status' => 'success']);
+//        }
+//
+//        return Response::json(['msg' => Lang::get('msg.tournament_restored_error', ['name' => $tournament->name]), 'status' => 'error']);
+//
+//    }
 
     /**
      * Called when a user want to register an open tournament

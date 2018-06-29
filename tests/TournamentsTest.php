@@ -176,8 +176,6 @@ class TournamentsTest extends TestCase
         $this->seeInDatabase('championship', ['tournament_id' => $tournament->id, 'category_id' => 7]);
     }
 
-
-
     /** @test */
     public function it_delete_tournament()
     {
