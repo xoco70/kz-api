@@ -5,7 +5,6 @@ use App\Competitor;
 use App\Tournament;
 use App\User;
 use App\Venue;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
 use Tests\Concerns\AttachJwtToken;
