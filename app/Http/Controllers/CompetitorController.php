@@ -10,6 +10,9 @@ use App\Tournament;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class CompetitorController extends Controller
 {
@@ -56,23 +59,31 @@ class CompetitorController extends Controller
     {
         try {
             $competitors = $request->competitors;
+
             $championship = Championship::findOrFail($championshipId);
             $tournament = $championship->tournament;
+            // TODO Validation doesn't pass testing.
+//            $validate = $this->validate($this->request, [
+//                'competitors.*.firstname' => 'required',
+//                'competitors.*.lastname' => 'required',
+////                'competitors.*.email' => 'email',
+//            ]);
 
-            //TODO Should first validate competitors
+
             foreach ($competitors as $competitor) {
+
                 $firstname = $competitor['firstname'];
                 $email = $competitor['email'] != null
                     ? $competitor['email']
-                    : $request->auth->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
-                $lastname = $competitor['lastname'] ?? '';
+                    : Auth::user()->id . sha1(rand(1, 999999999999)) . (User::count() + 1) . "@kendozone.com";
+                $lastname = $competitor['lastname'];
+
                 $user = Competitor::createUser([
                     'firstname' => $firstname,
                     'lastname' => $lastname,
                     'name' => $firstname . " " . $lastname,
                     'email' => $email
                 ]);
-
 
                 $championships = $user->championships();
 //            // If user has not registered yet this championship
@@ -89,9 +100,11 @@ class CompetitorController extends Controller
                     $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
                 }
             }
-            return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'msg' => 'msg.competitors_added_successful'], 200);
-        } catch (\Exception $e) {;
-            return response()->json($e->getLine(), $e->getCode());
+            return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'msg' => 'msg.competitors_added_successful'], HttpResponse::HTTP_OK);
+        } catch (ValidationException $e) {
+            return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
 
