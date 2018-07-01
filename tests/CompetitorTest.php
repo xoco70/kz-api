@@ -74,18 +74,18 @@ class CompetitorTest extends TestCase
         }
     }
 
-    /** @test */
-    public function it_removes_a_competitor_from_tournament()
-    {
-        // Given
-        $tournament = factory(Tournament::class)->create(['user_id' => $this->root->id]);
-        $championship = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]); // Single
-        $user = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_USER')]);
-        $competitor = factory(Competitor::class)->create(['championship_id' => $championship->id, 'user_id' => $user->id]);
-        $this->seeInDatabase('competitor', $competitor->toArray());
-        $this->call('DELETE', '/tournaments/' . $tournament->slug . '/competitors/' . $competitor->id);
-        $this->notSeeInDatabase('competitor', ['championship_id' => $championship->id, 'user_id' => $user->id]);
-    }
+//    /** @test */
+//    public function it_removes_a_competitor_from_tournament()
+//    {
+//        // Given
+//        $tournament = factory(Tournament::class)->create(['user_id' => $this->root->id]);
+//        $championship = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]); // Single
+//        $user = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_USER')]);
+//        $competitor = factory(Competitor::class)->create(['championship_id' => $championship->id, 'user_id' => $user->id]);
+//        $this->seeInDatabase('competitor', $competitor->toArray());
+//        $this->call('DELETE', '/tournaments/' . $tournament->slug . '/competitors/' . $competitor->id);
+//        $this->notSeeInDatabase('competitor', ['championship_id' => $championship->id, 'user_id' => $user->id]);
+//    }
 //
 //    /** @test */
 //    public function you_must_own_tournament_or_be_superuser_to_add_or_remove_user_from_tournament()
