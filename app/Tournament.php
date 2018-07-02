@@ -297,7 +297,6 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
         // Create Tournament Categories
         $arrCategories = array_keys($options);
         $this->categories()->sync($arrCategories);
-
         // Configure each category creating categorySetting Object
 
         foreach ($this->championships as $championship) {

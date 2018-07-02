@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class TournamentResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class TournamentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'user' => User::findOrFail($this->user_id)->email,
+            'user' => User::findOrFail(Auth::user()->id)->email,
             'date' => $this->dateIni,
             'slug' => $this->slug,
             'venue_id' => $this->venue_id,

@@ -231,7 +231,7 @@ class TournamentsTest extends TestCase
 //    {
 //        Artisan::call('db:seed', ['--class' => 'TournamentLevelSeeder', '--database' => 'sqlite']);
 //        $tournament = factory(Tournament::class)->create([
-//            'user_id' => $request->auth->id,
+//            'user_id' => Auth::user()->id,
 //            'deleted_at' => '2015-12-12']);
 //
 //        $this->actingAs($this->root, 'api')

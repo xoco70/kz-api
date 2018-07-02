@@ -46,6 +46,7 @@ class TournamentController extends Controller
      */
     public function index()
     {
+
         return TournamentResource::collection(Tournament::paginate(25));
     }
 
@@ -87,7 +88,7 @@ class TournamentController extends Controller
                 'dateIni' => 'required',
                 'dateFin' => 'required',
                 'rule_id' => 'required',
-                'categoriesSelected' => 'required',
+                'categoriesSelected' => 'min:0',
             ]);
             $categoriesSelected = $this->request->categoriesSelected;
             $ruleId = $this->request->rule_id;
@@ -96,6 +97,8 @@ class TournamentController extends Controller
             $request['dateFin'] = Tournament::parseDate($this->request->dateFin);
             $request['registerDateLimit'] = Carbon::now()->addMonth(3)->format('Y-m-d');
             $tournament = Auth::user()->tournaments()->create($request);
+
+
             if ($ruleId == 0) { // No presets,
                 $tournament->categories()->sync($categoriesSelected);
                 return response()->json($tournament, HttpResponse::HTTP_OK);
@@ -222,7 +225,7 @@ class TournamentController extends Controller
             return redirect(URL::action('Auth\LoginController@login'));
         }
         if ($tournament->isOpen() && Auth::check()) {
-            App::setLocale($request->auth->locale);
+            App::setLocale(Auth::user()->locale);
 
             $grades = Grade::getAllPlucked();
             $tournament = Tournament::with('championships.category', 'championships.users')->find($tournament->id);

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 class UserRequest extends Request
@@ -66,7 +67,7 @@ class UserRequest extends Request
         $user->fill($data);
         $user->password = bcrypt($this->password);
 
-        if ($request->auth->cannot('store', $user)) {
+        if (Auth::user()->cannot('store', $user)) {
             throw new AuthorizationException();
         }
         return $user->save();
@@ -74,9 +75,9 @@ class UserRequest extends Request
 
     public function update(User $user)
     {
-//        $this->authorize('update', [$user, $request->auth]);
+//        $this->authorize('update', [$user, Auth::user()]);
 
-        if ($request->auth->cannot('update', $user)) {
+        if (Auth::user()->cannot('update', $user)) {
             throw new AuthorizationException();
         }
         $except = [];

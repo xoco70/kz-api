@@ -35,7 +35,7 @@ class ChampionshipRequest extends Request
             return Invite::findOrFail($this->invite);
 
         return Invite::where('code', 'open')
-            ->where('email', $request->auth->email)
+            ->where('email', Auth::user()->email)
             ->where('object_type', 'App\Tournament')
             ->where('object_id', $tournament->id)
             ->get();

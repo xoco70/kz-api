@@ -16,8 +16,8 @@ class CustomException extends \Exception
             if (Auth::check()) {
                 $params = [
                     'user' => [
-                        'id' => $request->auth->id,
-                        'email' => $request->auth->email
+                        'id' => Auth::user()->id,
+                        'email' => Auth::user()->email
                     ],
                 ];
             }
