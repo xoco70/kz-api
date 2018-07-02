@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\FightersGroup;
 use Illuminate\Http\Request;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
+use Illuminate\Http\Response as HttpResponse;
 
 class ChampionshipSettingsController extends Controller
 {
@@ -49,9 +50,9 @@ class ChampionshipSettingsController extends Controller
                 FightersGroup::where('championship_id', $championshipId)->delete();
             }
             $setting->save();
-            return response()->json(['setting' => $setting, 'msg' => trans('msg.category_update_successful'), 'status' => 'success']);
+            return response()->json(['setting' => $setting], HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json(['msg' => $e->getMessage(), 'status' => 'error']);
+            return response()->json(['msg' => $e->getMessage()], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
