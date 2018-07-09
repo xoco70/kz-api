@@ -44,7 +44,6 @@ class TournamentController extends Controller
      */
     public function index()
     {
-
         return TournamentResource::collection(Tournament::paginate(25));
     }
 
@@ -193,6 +192,26 @@ class TournamentController extends Controller
         }
     }
 
+    /**
+     * Return stats for tournament right menu
+     * @param $slug
+     * @return JsonResponse
+     */
+    public function statistics($slug)
+    {
+        try {
+            $tournament = Tournament::where('slug', $slug)->first();
+            return response()->json([
+                'competitors_count' => $tournament->competitors()->count(),
+                'teams_count' => $tournament->teams()->count(),
+                'trees_count' => $tournament->trees()->count(),
+                'championships_count' => $tournament->championships()->count()
+            ], HttpResponse::HTTP_OK);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), $e->getCode());
+        }
+    }
+
 //    /**
 //     * @param $tournamentSlug
 //     * @return JsonResponse
@@ -215,21 +234,23 @@ class TournamentController extends Controller
      * @return mixed
      * @throws InvitationNeededException
      */
-    public function register(Request $request, Tournament $tournament)
-    {
+//    public function register(Request $request, Tournament $tournament)
+//    {
+//
+//        if (!Auth::check()) {
+//            Session::flash('message', trans('msg.please_create_account_before_playing', ['tournament' => $tournament->name]));
+//            return redirect(URL::action('Auth\LoginController@login'));
+//        }
+//        if ($tournament->isOpen() && Auth::check()) {
+//            App::setLocale(Auth::user()->locale);
+//
+//            $grades = Grade::getAllPlucked();
+//            $tournament = Tournament::with('championships.category', 'championships.users')->find($tournament->id);
+//            return view("categories.register", compact('tournament', 'invite', 'currentModelName', 'grades'));
+//        }
+//
+//        throw new InvitationNeededException();
+//    }
 
-        if (!Auth::check()) {
-            Session::flash('message', trans('msg.please_create_account_before_playing', ['tournament' => $tournament->name]));
-            return redirect(URL::action('Auth\LoginController@login'));
-        }
-        if ($tournament->isOpen() && Auth::check()) {
-            App::setLocale(Auth::user()->locale);
 
-            $grades = Grade::getAllPlucked();
-            $tournament = Tournament::with('championships.category', 'championships.users')->find($tournament->id);
-            return view("categories.register", compact('tournament', 'invite', 'currentModelName', 'grades'));
-        }
-
-        throw new InvitationNeededException();
-    }
 }
