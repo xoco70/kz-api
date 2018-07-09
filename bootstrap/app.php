@@ -71,7 +71,6 @@ $app->middleware([
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'jwt.auth' => Tymon\JWTAuth\Http\Middleware\GetUserFromToken::class,
     'jwt.refresh' => Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
 ]);
 
@@ -133,6 +132,7 @@ $app->configure('countries');
 $app->configure('constants');
 $app->configure('options');
 $app->configure('debugbar');
+$app->configure('jwt');
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
 return $app;

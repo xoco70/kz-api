@@ -71,6 +71,6 @@ class AuthController
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json('login.wrong_password', HttpResponse::HTTP_UNAUTHORIZED);
         }
-        return response()->json(compact('token'), HttpResponse::HTTP_ACCEPTED);
+        return response()->json(compact('token','user'), HttpResponse::HTTP_ACCEPTED);
     }
 }

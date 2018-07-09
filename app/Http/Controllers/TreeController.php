@@ -8,6 +8,7 @@ use App\Grade;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 
 class TreeController extends Controller
 {
@@ -32,7 +33,6 @@ class TreeController extends Controller
      */
     public function store(Request $request)
     {
-
         $tournament = FightersGroup::getTournament($request); // Builder
 
         foreach ($tournament->championships as $championship) {
@@ -41,9 +41,11 @@ class TreeController extends Controller
             //TODO Generation has twice the setting Object, once in championship, and once in root
             try {
                 $generation->run();
-                return response()->json(['msg' => 'msg.championships_tree_generation_success', 'status' => 200]);
+
+                $trees = FightersGroup::getTournament($request);
+                return response()->json($trees, HttpResponse::HTTP_OK);
             } catch (Exception $e) {
-                return response()->json(['msg' => $e->getMessage()],$e->getCode());
+                return response()->json($e->getMessage(),HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
