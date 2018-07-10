@@ -7,6 +7,7 @@ use App\Notifications\AccountRegistered;
 use App\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Validator;
 
@@ -45,7 +46,7 @@ class RegisterController extends Controller
 
         $user->notify(new AccountRegistered($user));
 
-        return response()->json(['message' => 'OK', 'code' => '200']);
+        return response()->json($user, Response::HTTP_CREATED);
 
 
     }
@@ -62,7 +63,7 @@ class RegisterController extends Controller
         $user = User::where('token', $token)->firstOrFail();
         $user->verified = true;
         $user->save();
-        return redirect(env('URL_FRONT').'login?welcome=1');
+        return redirect(env('URL_FRONT') . 'login?welcome=1');
     }
 
     /**

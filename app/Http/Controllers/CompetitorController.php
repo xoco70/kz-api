@@ -40,13 +40,7 @@ class CompetitorController extends Controller
     {
         $tournament = Tournament::with('championships.competitors.user', 'championships.teams', 'championships.category')
             ->where('slug', $slug)->first();
-//        $settingSize = $tournament->championshipSettings()->count();
-//        $categorySize = $tournament->categories->count();
-//        $grades = Grade::getAllPlucked();
-//        $countries = Country::getAll();
-//        return view("tournaments.users", compact('tournament', 'settingSize', 'categorySize', 'grades', 'countries'));
-//        factory(Competitor::class,20)->create();
-        return $tournament;
+        return response()->json($tournament, HttpResponse::HTTP_OK);
     }
 
     /**
@@ -100,7 +94,7 @@ class CompetitorController extends Controller
                     $user->notify(new InviteCompetitor($user, $tournament, $code, $championship->category->name));
                 }
             }
-            return response()->json(['competitors' => $championship->competitors()->with('user')->get(), 'msg' => 'msg.competitors_added_successful'], HttpResponse::HTTP_OK);
+            return response()->json($championship->competitors()->with('user')->get(), HttpResponse::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
@@ -120,10 +114,10 @@ class CompetitorController extends Controller
     {
         try {
             Competitor::destroy($competitorId);
-            return response()->json('msg.user_delete_successful', 200);
+            return response()->json('msg.user_delete_successful', HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
             //TODO May not work, and return a big HTML
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

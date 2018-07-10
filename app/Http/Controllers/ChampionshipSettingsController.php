@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 use Illuminate\Http\Response as HttpResponse;
 
+
 class ChampionshipSettingsController extends Controller
 {
 
@@ -21,13 +22,12 @@ class ChampionshipSettingsController extends Controller
      */
     public function store(Request $request, $championshipId)
     {
-
         try {
             $request->request->add(['championship_id' => $championshipId]);
             $settings = ChampionshipSettings::create($request->all());
-            return response()->json(['settings' => $settings, 'msg' => trans('msg.category_create_successful'), 'status' => 'success']);
+            return response()->json($settings, HttpResponse::HTTP_CREATED);
         } catch (\Exception $e) {
-            return response()->json(['msg' => $e->getMessage(), 'status' => 'error']);
+            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -50,7 +50,7 @@ class ChampionshipSettingsController extends Controller
                 FightersGroup::where('championship_id', $championshipId)->delete();
             }
             $setting->save();
-            return response()->json(['setting' => $setting], HttpResponse::HTTP_OK);
+            return response()->json($setting, HttpResponse::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['msg' => $e->getMessage()], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }

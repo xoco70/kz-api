@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -64,9 +65,9 @@ class TournamentController extends Controller
                 ->where('slug', $slug)->first();
 
             $tournament->trees_count = $tournament->trees->groupBy('championship_id')->count();
-            return response()->json(['tournament' => $tournament, 'categories' => $categories], 200);
+            return response()->json(['tournament' => $tournament, 'categories' => $categories], Response::HTTP_OK);
         } catch (Exception $e) {
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -98,10 +99,10 @@ class TournamentController extends Controller
 
             if ($ruleId == 0) { // No presets,
                 $tournament->categories()->sync($categoriesSelected);
-                return response()->json($tournament, HttpResponse::HTTP_OK);
+                return response()->json($tournament, HttpResponse::HTTP_CREATED);
             }
             $tournament->setAndConfigureCategories($ruleId);
-            return response()->json($tournament, HttpResponse::HTTP_OK);
+            return response()->json($tournament, HttpResponse::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {

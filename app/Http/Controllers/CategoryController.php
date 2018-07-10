@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\Response as HttpResponse;
 
 class CategoryController extends Controller
 {
@@ -17,7 +17,9 @@ class CategoryController extends Controller
     public function index()
     {
         // returns array with ikf, ekf, clak
-        return Category::take(10)->orderBy('id', 'asc')->select('id','name')->get();
+        return response()->json(
+            Category::take(10)->orderBy('id', 'asc')->select('id', 'name')->get(), HttpResponse::HTTP_OK
+        );
     }
 
 
@@ -30,7 +32,6 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-//        $category = $request->getCategoryByFilters();
         $category = new Category;
         $category->name = $request->name;
         $category->isTeam = $request->isTeam;
@@ -44,6 +45,6 @@ class CategoryController extends Controller
 
         $newCategoryName = Category::firstOrCreate($category->toArray());
 
-        return $newCategoryName;
+        return response()->json($newCategoryName, HttpResponse::HTTP_CREATED);
     }
 }
