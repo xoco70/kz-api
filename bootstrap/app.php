@@ -49,6 +49,16 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->singleton(
+    Illuminate\Contracts\Filesystem\Factory::class,
+    function ($app) {
+        return new Illuminate\Filesystem\FilesystemManager($app);
+    }
+);
+
+$app->singleton('filesystem', function ($app) {
+    return $app->loadComponent('filesystems', 'Illuminate\Filesystem\FilesystemServiceProvider', 'filesystem');
+});
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -108,7 +118,8 @@ if ($app->environment() !== 'production') {
 $app->register(Barryvdh\Snappy\LumenServiceProvider::class);
 
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
-$app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
+$app->register(Sentry\SentryLaravel\SentryLumenServiceProvider::class);
+$app->register(Intervention\Image\ImageServiceProviderLumen::class);
 
 
 /*
@@ -133,6 +144,8 @@ $app->configure('constants');
 $app->configure('options');
 $app->configure('debugbar');
 $app->configure('jwt');
+$app->configure('filesystems');
+
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
 return $app;

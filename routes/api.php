@@ -38,6 +38,6 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->put('/users/{slug}', 'UserController@update');
     }
 );
-$router->post('/user/avatar', 'UserController@upload');
+$router->post('/users/{slug}/avatar/', 'UserController@upload');
 
 

@@ -245,15 +245,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->firstname ?? '' . " " . $this->lastname ?? '';
     }
 
-    public function getAvatarAttribute($avatar)
-    {
-
-        if (!str_contains($avatar, 'http') && isset($avatar)) {
-            return asset(config('constants.AVATAR_PATH') . $avatar);
-        }
-        return $avatar;
-    }
-
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

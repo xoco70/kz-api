@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Intervention\Image\Exception\NotFoundException;
+use Intervention\Image\Facades\Image;
 
 
 class UserController extends Controller
@@ -45,7 +49,7 @@ class UserController extends Controller
             $user->firstname = $request->firstname;
             $user->lastname = $request->lastname;
             $user->country_id = $request->country_id ?? null;
-            $user->grade_id = $request->grade_id  ?? null;
+            $user->grade_id = $request->grade_id ?? null;
             $user->update();
 
             return $user;
@@ -57,25 +61,37 @@ class UserController extends Controller
         }
     }
 
-    public function upload(Request $request)
+    public function upload($slug, Request $request)
     {
-//        $request->validate([
-//            'file' => ['required', 'image']
-//        ]);
-        $file = $request
-            ->file('file')
-            ->store('images/avatar', 'public');
+        try {
+            $this->validate($request, [
+                'file' => ['required', 'image']
+            ]);
+            $file = $request
+                ->file('file');
+            $imgName = str_slug($file->getClientOriginalName());
+            $ext = '.' . $file->guessClientExtension();
+            $imgName .= '-' . md5($imgName . microtime()) . $ext;
+            $img = Image::make($file);
+            $img->resize(200, 200, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $resource = $img->stream()->detach();
+            Storage::disk('s3')->put('avatar/' . $imgName, $resource);
+            // TODO  We should be logged, and be able to use: Auth::user()
+            $user = User::where('slug', $slug)->firstOrFail();
+            $user->update(['avatar' => $imgName]);
+            return response()->json($imgName, Response::HTTP_OK);
+        } catch (ValidationException $e) {
+            return response()->json('', Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (NotFoundException $e) {
+            return response()->json('', Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json('', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-//        Image::make(storage_path('app/public/' . $file))
-//            ->resize(200, 200, function ($constraint) {
-//                $constraint->aspectRatio();
-//                $constraint->upsize();
-//            })
-//            ->save();
-
-//        Auth::user()->update([
-//            'avatar' => basename($file)
-//        ]);
-        return response([], 204);
     }
 }
+
+
