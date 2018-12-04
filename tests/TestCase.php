@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Contracts\Notifications\Dispatcher as NotificationDispatcher;
+use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
@@ -31,13 +32,13 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
         if (is_null(self::$configurationApp)) {
             $app->environment('testing');
 
-            if (config('database.default') == 'sqlite') {
+            if (config('database.default') == ':memory:') {
                 $db = app()->make('db');
                 $db->connection()->getPdo()->exec("pragma foreign_keys=1");
             }
 
-//            Artisan::call('migrate');
-//            Artisan::call('db:seed');
+            Artisan::call('migrate');
+            Artisan::call('db:seed');
 
             self::$configurationApp = $app;
         }
