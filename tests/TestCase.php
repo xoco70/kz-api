@@ -24,20 +24,21 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 
     private static $configurationApp = null;
 
-    // It last 13 seconds to initially migrate DB.
-    // Worth to use it when tests > 30 sec
     public static function initialize()
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
         if (is_null(self::$configurationApp)) {
             $app->environment('testing');
 
-            if (config('database.default') == ':memory:') {
+            if (config('database.default') == 'sqlite') {
+
                 $db = app()->make('db');
                 $db->connection()->getPdo()->exec("pragma foreign_keys=1");
             }
 
+
             Artisan::call('migrate');
+            dd("migrate");
             Artisan::call('db:seed');
 
             self::$configurationApp = $app;

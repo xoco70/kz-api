@@ -1,8 +1,12 @@
 <?php
+
 namespace App\Http\Middleware;
+
+use Closure;
+
 class CorsMiddleware
 {
-    public function handle($request, \Closure $next)
+    public function handle($request, Closure $next)
     {
         $headers = [
             'Content-type' => 'application/json;charset=UTF-8',

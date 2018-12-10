@@ -70,9 +70,9 @@ $app->singleton('filesystem', function ($app) {
 |
 */
 
-$app->middleware([
-    App\Http\Middleware\CorsMiddleware::class
-]);
+//$app->middleware([
+//    App\Http\Middleware\CorsMiddleware::class
+//]);
 
 
 //$app->routeMiddleware([
@@ -145,6 +145,13 @@ $app->configure('options');
 $app->configure('debugbar');
 $app->configure('jwt');
 $app->configure('filesystems');
+$app->configure('cors');
+
+$app->middleware([
+    Spatie\Cors\Cors::class,
+]);
+
+$app->register(Spatie\Cors\CorsServiceProvider::class);
 
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
