@@ -86,11 +86,6 @@ function internet_connected()
 
 }
 
-function public_path($path = null)
-{
-    return rtrim(app()->basePath('public/' . $path), '/');
-}
-
 function ip()
 {
     return isset($_SERVER['HTTP_CLIENT_IP'])
