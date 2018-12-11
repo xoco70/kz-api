@@ -73,13 +73,13 @@ $app->singleton('filesystem', function ($app) {
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-$app->middleware([
-    // ...
-    \Barryvdh\Cors\HandleCors::class,
-]);
 //$app->middleware([
-//    App\Http\Middleware\CorsMiddleware::class
+//    // ...
+//    \Barryvdh\Cors\HandleCors::class,
 //]);
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+]);
 
 
 //$app->routeMiddleware([
@@ -152,9 +152,6 @@ $app->configure('options');
 $app->configure('debugbar');
 $app->configure('jwt');
 $app->configure('filesystems');
-$app->configure('cors');
-
-$app->register(Barryvdh\Cors\ServiceProvider::class);
 
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
