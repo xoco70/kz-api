@@ -51,7 +51,7 @@ class ResetLinkEmailSent extends Notification
             ->subject($subject)
             ->greeting(trans('mail.hello'))
             ->line(trans('mail.mail_cause'))
-            ->action(trans('mail.reset_password'), url("/register/confirm/{$this->user->token}"))
+            ->action(trans('mail.reset_password'), env('URL_FRONTEND_BASE') . "/password/reset/{$this->user->token}")
             ->line(trans('mail.reset_password_footer'))
             ->line($appName);
     }

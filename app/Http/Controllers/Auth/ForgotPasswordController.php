@@ -44,11 +44,11 @@ class ForgotPasswordController extends Controller
                 'token' => $token
             ]);
             $user->notify(new ResetLinkEmailSent($user, $token));
+            return response()->json(Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
             return response()->json(['class' => $e->getTraceAsString(), 'message'=> $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return null;
     }
 }

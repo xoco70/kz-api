@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Notifications\AccountRegistered;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -60,10 +61,17 @@ class RegisterController extends Controller
     public function confirm($token)
     {
         // TODO Redirect to Front error page is fail
-        $user = User::where('token', $token)->firstOrFail();
-        $user->verified = true;
-        $user->save();
-        return redirect(env('URL_FRONT') . 'login?welcome=1');
+        try {
+            $user = User::where('token', $token)->firstOrFail();
+            $user->verified = true;
+            $user->save();
+            return response()->json(['message' => 'User confirmed'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     /**
