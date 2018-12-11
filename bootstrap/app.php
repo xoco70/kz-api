@@ -129,6 +129,7 @@ $app->register(Barryvdh\Snappy\LumenServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(Sentry\SentryLaravel\SentryLumenServiceProvider::class);
 $app->register(Intervention\Image\ImageServiceProviderLumen::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 
 /*
@@ -154,6 +155,7 @@ $app->configure('options');
 $app->configure('debugbar');
 $app->configure('jwt');
 $app->configure('filesystems');
+$app->configure('mail');
 
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
