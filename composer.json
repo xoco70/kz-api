@@ -11,6 +11,7 @@
   "require": {
     "php": ">=7.1.3",
     "aws/aws-sdk-php-laravel": "~3.0",
+    "barryvdh/laravel-cors": "^0.11.2",
     "barryvdh/laravel-ide-helper": "^2.4",
     "barryvdh/laravel-snappy": "^0.4.1",
     "cviebrock/eloquent-sluggable": "^4.5",
@@ -24,7 +25,6 @@
     "owen-it/laravel-auditing": "^8.0",
     "ramsey/uuid": "^3.7",
     "sentry/sentry-laravel": "^0.11.0",
-    "spatie/laravel-cors": "^1.3",
     "torann/geoip": "^1.0",
     "tymon/jwt-auth": "^1.0.0-rc.2",
     "urameshibr/lumen-form-request": "^1.4",

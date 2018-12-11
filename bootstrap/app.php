@@ -26,7 +26,6 @@ $app = new Laravel\Lumen\Application(
 
 $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
 $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
-$app->instance('path.public', app()->basePath() . DIRECTORY_SEPARATOR . 'public');
 
 $app->withFacades();
 
@@ -74,7 +73,10 @@ $app->singleton('filesystem', function ($app) {
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-
+$app->middleware([
+    // ...
+    \Barryvdh\Cors\HandleCors::class,
+]);
 //$app->middleware([
 //    App\Http\Middleware\CorsMiddleware::class
 //]);
@@ -152,11 +154,7 @@ $app->configure('jwt');
 $app->configure('filesystems');
 $app->configure('cors');
 
-$app->middleware([
-    Spatie\Cors\Cors::class,
-]);
-
-$app->register(Spatie\Cors\CorsServiceProvider::class);
+$app->register(Barryvdh\Cors\ServiceProvider::class);
 
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
