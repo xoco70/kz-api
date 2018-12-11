@@ -27,23 +27,6 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
     public static function initialize()
     {
         $app = require __DIR__ . '/../bootstrap/app.php';
-        if (is_null(self::$configurationApp)) {
-            $app->environment('testing');
-
-            if (config('database.default') == 'sqlite') {
-
-                $db = app()->make('db');
-                $db->connection()->getPdo()->exec("pragma foreign_keys=1");
-            }
-
-
-            Artisan::call('migrate');
-            dd("migrate");
-            Artisan::call('db:seed');
-
-            self::$configurationApp = $app;
-        }
-
         return $app;
     }
 

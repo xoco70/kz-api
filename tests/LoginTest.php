@@ -1,5 +1,8 @@
 <?php
 
+use App\User;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -7,7 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class LoginTest extends TestCase
 {
 
-    use DatabaseTransactions;
+    use DatabaseMigrations;
     protected $initialTournamentNum = 6;
     protected $defaultPagintation = 25;
 
@@ -15,7 +18,6 @@ class LoginTest extends TestCase
     /** @test */
     public function cant_access_route_without_token()
     {
-
         $response = $this->call('GET', '/tournaments');
         // I should be blocked
         $this->assertEquals(HttpResponse::HTTP_UNAUTHORIZED, $response->status());
@@ -28,8 +30,8 @@ class LoginTest extends TestCase
     /** @test */
     public function getMainAuthenticated()
     {
-        $credentials = JWTAuth::attempt(['email' => 'superuser@kendozone.dev', 'password' => 'superuser@kendozone.dev']);
-
+        $user = $this->createSuperUser();
+        $credentials = JWTAuth::attempt(['email' => $user->email, 'password' => 'superuser']);
         // as a user, I try to access the admin panels without a JWT token
         $response = $this->call(
             'GET',
@@ -68,8 +70,9 @@ class LoginTest extends TestCase
     /** @test */
     public function LoginSuccesfull()
     {
-        // as a user, I wrongly type my email and password
-        $data = ['email' => 'superuser@kendozone.dev', 'password' => 'superuser@kendozone.dev'];
+        $user = $this->createSuperUser();
+        // as a user, I type my email and password
+        $data = ['email' => $user->email, 'password' => 'superuser'];
         // and I submit it to the login api
         $response = $this->call('POST', '/auth/login', $data);
         // I should be able to login
@@ -78,5 +81,13 @@ class LoginTest extends TestCase
         $content = json_decode($response->getContent());
         $this->assertObjectHasAttribute('token', $content);
         $this->assertNotEmpty($content->token);
+    }
+
+    private function createSuperUser()
+    {
+        return factory(App\User::class)->create([
+            'email' => 'superuser@kendozone.dev',
+            'password' => app('hash')->make('superuser')
+        ]);
     }
 }

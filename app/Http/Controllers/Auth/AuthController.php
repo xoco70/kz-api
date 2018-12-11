@@ -63,13 +63,13 @@ class AuthController
 //            'password' => 'required'
 //        ]);
         // Find the user by email
-        $user = User::where('email', $this->request->input('email'))->first();
+        $user = User::where('email', $this->request->email)->first();
         if (!$user) {
-            return response()->json('login.wrong_email', HttpResponse::HTTP_UNAUTHORIZED);
+            return response()->json('login.invalid_credentials', HttpResponse::HTTP_UNAUTHORIZED);
         }
         $credentials = Input::only('email', 'password');
         if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json('login.wrong_password', HttpResponse::HTTP_UNAUTHORIZED);
+            return response()->json('login.invalid_credentials', HttpResponse::HTTP_UNAUTHORIZED);
         }
         return response()->json(compact('token','user'), HttpResponse::HTTP_ACCEPTED);
     }
