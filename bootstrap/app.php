@@ -23,6 +23,11 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__ . '/../')
 );
 
+
+$app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
+$app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
+$app->instance('path.public', app()->basePath() . DIRECTORY_SEPARATOR . 'public');
+
 $app->withFacades();
 
 $app->withEloquent();
