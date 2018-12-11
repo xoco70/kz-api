@@ -26,6 +26,7 @@ $app = new Laravel\Lumen\Application(
 
 $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
 $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
+$app->instance('path.public', app()->basePath() . DIRECTORY_SEPARATOR . 'public');
 
 $app->withFacades();
 
@@ -77,6 +78,7 @@ $app->singleton('filesystem', function ($app) {
 //    // ...
 //    \Barryvdh\Cors\HandleCors::class,
 //]);
+
 $app->middleware([
     App\Http\Middleware\CorsMiddleware::class
 ]);
