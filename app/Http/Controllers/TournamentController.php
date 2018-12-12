@@ -41,7 +41,7 @@ class TournamentController extends Controller
     }
 
     /**
-     * Display a listing of the resource
+     * Show a list of tournament
      */
     public function index()
     {
@@ -49,8 +49,7 @@ class TournamentController extends Controller
     }
 
     /**
-     * Display a listing of the resource
-     * TODO Don't know how to test it
+     * Return needed resources to build the edit tournament page
      */
     public function edit($slug)
     {
