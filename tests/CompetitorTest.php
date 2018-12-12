@@ -4,9 +4,9 @@ use App\Championship;
 use App\Competitor;
 use App\Tournament;
 use App\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
 
@@ -24,7 +24,7 @@ use Tests\Concerns\AttachJwtToken;
  */
 class CompetitorTest extends TestCase
 {
-    use DatabaseTransactions, AttachJwtToken;
+    use DatabaseMigrations, AttachJwtToken;
 
     protected $user, $users, $addUser, $editUser, $root, $simpleUser;
 
@@ -40,17 +40,16 @@ class CompetitorTest extends TestCase
     /** @test */
     public function it_add_a_user_to_championship()
     {
-
         $tournament = factory(Tournament::class)->create(['user_id' => $this->root->id]);
         factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]);
 
         $existingUser = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_USER')]);
-        $deletedUser = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_USER'), 'deleted_at' => "2015-01-01"]);
+//        $deletedUser = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_USER'), 'deleted_at' => "2015-01-01"]);
 
         $newUser = clone $existingUser;
         $newUser->email = "new@email.com";
 
-        $competitors = [$existingUser, $deletedUser];
+        $competitors = [$existingUser]; // , $deletedUser
         foreach ($tournament->championships as $championship) {
             $this->addCompetitorsToChampionship($championship, $competitors);
         }

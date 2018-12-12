@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
 
 trait SeedMethods
 {
@@ -8,7 +9,8 @@ trait SeedMethods
     {
         return factory(App\User::class)->create([
             'email' => 'superuser@kendozone.dev',
-            'password' => app('hash')->make('superuser')
+            'password' => app('hash')->make('superuser'),
+            'role_id' => Config::get('constants.ROLE_SUPERADMIN')
         ]);
     }
 
