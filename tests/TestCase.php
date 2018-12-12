@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Contracts\Notifications\Dispatcher as NotificationDispatcher;
-use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
+    use SeedMethods;
     /** @var array */
     protected $dispatchedNotifications = [];
     protected static $applicationRefreshed = false;

@@ -331,6 +331,7 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
     }
 
     /**
+     * Get all the categories of a tournament
      * We can use $tournament->categories()->attach(id);
      * Or         $tournament->categories()->sync([1, 2, 3]);
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

@@ -1,9 +1,6 @@
 <?php
 
-use App\User;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -83,11 +80,5 @@ class LoginTest extends TestCase
         $this->assertNotEmpty($content->token);
     }
 
-    private function createSuperUser()
-    {
-        return factory(App\User::class)->create([
-            'email' => 'superuser@kendozone.dev',
-            'password' => app('hash')->make('superuser')
-        ]);
-    }
+
 }
