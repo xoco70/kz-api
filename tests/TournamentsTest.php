@@ -144,15 +144,16 @@ class TournamentsTest extends TestCase
 
 
     /** @test */
-    public function update_venue_info_in_tournament() // TODO NOT PASSING
+    public function update_venue_info_in_tournament()
     {
+        $this->seedBasicElements();
         $tournament = factory(Tournament::class)->create();
         $venue = factory(Venue::class)->make();
-        $arrVenue = json_decode(json_encode($venue), true);
         $this->call('PUT', '/tournaments/' . $tournament->slug, ['venue' => $venue, 'tab' => 'venue']);
+        $venue = Venue::where(['venue_name' => $venue->venue_name])->first();
         $this->assertResponseOk();
         $this->seeInDatabase('tournament', ['venue_id' => $venue->id]);
-        $this->seeInDatabase('venue', $arrVenue);
+        $this->seeInDatabase('venue', $venue->toArray());
     }
 
     /** @test
