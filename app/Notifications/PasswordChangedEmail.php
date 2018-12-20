@@ -7,21 +7,19 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ResetLinkEmailSent extends Notification
+class PasswordChangedEmail extends Notification
 {
     use Queueable;
 
     protected $user;
-    protected $token;
 
     /**
      * AccountCreated constructor.
      * @param User $user
      */
-    public function __construct(User $user, $token)
+    public function __construct(User $user)
     {
         $this->user = $user;
-        $this->token = $token;
     }
 
 
@@ -45,14 +43,13 @@ class ResetLinkEmailSent extends Notification
     public function toMail($notifiable)
     {
         $appName = (app()->environment() == 'local' ? getenv('APP_NAME') : config('app.name'));
-        $subject = trans('mail.reset_password') . " - " . $appName;
+        $subject = trans('mail.password_changed') . " - " . $appName;
 
         return (new MailMessage)
             ->subject($subject)
             ->greeting(trans('mail.hello'))
-            ->line(trans('mail.mail_cause'))
-            ->action(trans('mail.reset_password'), env('URL_FRONTEND_BASE') . "/password/reset?token={$this->user->token}")
-            ->line(trans('mail.reset_password_footer'))
+            ->line(trans('mail.password_changed'))
+            ->action(trans('mail.you_can_now_login'), env('URL_FRONTEND_BASE'))
             ->line($appName);
     }
 

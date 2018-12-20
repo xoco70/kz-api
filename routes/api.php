@@ -5,8 +5,8 @@ $router->post('/register', 'Auth\RegisterController@register');
 $router->get('register/confirm/{token}', 'Auth\RegisterController@confirm');
 
 
-$router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-$router->post('password/reset/{token}', 'Auth\ResetPasswordController@reset');
+$router->post('password/email', 'Auth\PasswordController@forgot');
+$router->post('password/reset', 'Auth\PasswordController@reset');
 
 $router->group(['middleware' => 'jwt.auth'],
     function () use ($router) {

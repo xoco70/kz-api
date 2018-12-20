@@ -3,33 +3,25 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\PasswordChangedEmail;
+use Illuminate\Http\Request;
 use App\Notifications\ResetLinkEmailSent;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class ForgotPasswordController extends Controller
+class PasswordController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset emails and
-    | includes a trait which assists in sending these notifications from
-    | your application to your users. Feel free to explore this trait.
-    |
-    */
 
     /**
      * Create a new controller instance.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function sendResetLinkEmail(Request $request)
+    public function forgot(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
         // We will send the password reset link to this user. Once we have attempted
@@ -48,7 +40,26 @@ class ForgotPasswordController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
-            return response()->json(['class' => $e->getTraceAsString(), 'message'=> $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['class' => $e->getTraceAsString(), 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function reset(Request $request)
+    {
+        try {
+            $user = User::where('email', $request->email)->firstOrFail();
+            $user->password = Hash::make($request->password);
+            $user->setRememberToken(Str::random(60));
+            $user->save();
+            $user->notify(new PasswordChangedEmail($user));
+            return response()->json(Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['class' => $e->getTraceAsString(), 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
 }
