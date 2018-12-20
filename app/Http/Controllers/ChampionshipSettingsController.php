@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\FightersGroup;
 use Illuminate\Http\Request;
-use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 use Illuminate\Http\Response as HttpResponse;
+use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 
 
 class ChampionshipSettingsController extends Controller

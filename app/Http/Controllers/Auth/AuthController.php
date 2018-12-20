@@ -5,10 +5,9 @@ namespace app\Http\Controllers\Auth;
 
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Input;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Http\Response as HttpResponse;
 
 
 class AuthController

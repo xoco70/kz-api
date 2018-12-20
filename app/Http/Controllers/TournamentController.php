@@ -4,20 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Exceptions\InvitationNeededException;
-use App\Grade;
 use App\Http\Resources\TournamentResource;
 use App\Tournament;
 use App\Venue;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Http\Response;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 
 
