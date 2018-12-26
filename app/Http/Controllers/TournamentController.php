@@ -41,7 +41,12 @@ class TournamentController extends Controller
      */
     public function index()
     {
-        return TournamentResource::collection(Tournament::paginate(25));
+        if (Auth::user()->isSuperAdmin()) {
+            return TournamentResource::collection(Tournament::orderBy('updated_at', 'desc')->paginate(25));
+        }
+
+        return TournamentResource::collection(Auth::user()->tournaments()->orderBy('updated_at', 'desc')->paginate(25));
+
     }
 
     /**
