@@ -10,6 +10,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Validator;
 
 class RegisterController extends Controller
@@ -65,7 +66,7 @@ class RegisterController extends Controller
             $user = User::where('token', $token)->firstOrFail();
             $user->verified = true;
             $user->save();
-            return response()->json(['message' => 'User confirmed'], Response::HTTP_OK);
+            return redirect()->to(env('URL_FRONTEND_BASE'));
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
