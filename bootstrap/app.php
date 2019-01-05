@@ -156,6 +156,7 @@ $app->configure('debugbar');
 $app->configure('jwt');
 $app->configure('filesystems');
 $app->configure('mail');
+$app->configure('laravel-tournaments');
 
 $app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
 
