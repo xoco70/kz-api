@@ -7,6 +7,7 @@ use App\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Intervention\Image\Exception\NotFoundException;
@@ -66,8 +67,7 @@ class UserController extends Controller
             $this->validate($request, [
                 'file' => ['required', 'image']
             ]);
-            $file = $request
-                ->file('file');
+            $file = $request->file('file');
             $imgName = str_slug($file->getClientOriginalName());
             $ext = '.' . $file->guessClientExtension();
             $imgName .= '-' . md5($imgName . microtime()) . $ext;
@@ -78,16 +78,15 @@ class UserController extends Controller
             });
             $resource = $img->stream()->detach();
             Storage::disk('s3')->put('avatar/' . $imgName, $resource);
-            // TODO  We should be logged, and be able to use: Auth::user()
             $user = User::where('slug', $slug)->firstOrFail();
             $user->update(['avatar' => $imgName]);
             return response()->json($imgName, Response::HTTP_OK);
         } catch (ValidationException $e) {
-            return response()->json('', Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (NotFoundException $e) {
-            return response()->json('', Response::HTTP_NOT_FOUND);
+            return response()->json($e->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (Exception $e) {
-            return response()->json('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
     }
