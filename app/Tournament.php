@@ -155,7 +155,8 @@ class Tournament extends \Xoco70\LaravelTournaments\Models\Tournament
      */
     public function trees()
     {
-        return $this->hasManyThrough(FightersGroup::class, Championship::class);
+        return $this->hasManyThrough(FightersGroup::class, Championship::class)
+            ->groupBy('championship_id');
     }
 
     /**

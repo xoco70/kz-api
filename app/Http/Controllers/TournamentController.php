@@ -61,10 +61,9 @@ class TournamentController extends Controller
             $categories = $selectedCategories->merge($defaultCategories)->toArray();
 
             $tournament = Tournament::with('competitors', 'championshipSettings', 'championships.settings', 'championships.category', 'venue')
-                ->withCount('competitors', 'teams', 'championshipSettings')
+                ->withCount('championshipSettings')
                 ->where('slug', $slug)->first();
 
-            $tournament->trees_count = $tournament->trees->groupBy('championship_id')->count();
             return response()->json(['tournament' => $tournament, 'categories' => $categories], Response::HTTP_OK);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -148,10 +147,10 @@ class TournamentController extends Controller
                 $venue->fill([
                     'venue_name' => $this->request->venue['venue_name'],
                     'address' => $this->request->venue['address'],
-                    'details' => $this->request->venue['details'],
-                    'city' => $this->request->venue['city'],
-                    'CP' => $this->request->venue['CP'],
-                    'state' => $this->request->venue['state'],
+                    'details' => isset($this->request->venue['details']) ? $this->request->venue['details'] : null,
+                    'city' => isset($this->request->venue['city']) ? $this->request->venue['city'] : null,
+                    'CP' => isset($this->request->venue['CP']) ? $this->request->venue['CP'] : null,
+                    'state' => isset($this->request->venue['state']) ? $this->request->venue['state'] : null,
                     'latitude' => $this->request->venue['latitude'],
                     'longitude' => $this->request->venue['longitude'],
                     'country_id' => $this->request->venue['country_id'],
@@ -205,7 +204,7 @@ class TournamentController extends Controller
             return response()->json([
                 'competitors_count' => $tournament->competitors()->count(),
                 'teams_count' => $tournament->teams()->count(),
-                'trees_count' => $tournament->trees()->count(),
+                'trees_count' => $tournament->trees->count(),
                 'championships_count' => $tournament->championships()->count()
             ], HttpResponse::HTTP_OK);
         } catch (Exception $e) {
