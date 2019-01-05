@@ -34,12 +34,15 @@ class CompetitorController extends Controller
     }
 
     /**
-     * Display a listing of the resource
+     * Display a listing of the competitor in a tournament.
+     *
+     * @param $slug
+     * @return JsonResponse
      */
     public function index($slug)
     {
-        $tournament = Tournament::with('championships.competitors.user', 'championships.teams', 'championships.category')
-            ->where('slug', $slug)->first();
+        $tournament = Tournament::where('slug',$slug)->first();
+        $tournament = Tournament::with('championships.users', 'championships.competitors.user','championships.teams', 'championships.category')->find($tournament->id);
         return response()->json($tournament, HttpResponse::HTTP_OK);
     }
 
