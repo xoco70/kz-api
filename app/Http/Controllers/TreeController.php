@@ -45,7 +45,7 @@ class TreeController extends Controller
                 $trees = FightersGroup::getTournament($request);
                 return response()->json($trees, HttpResponse::HTTP_OK);
             } catch (Exception $e) {
-                return response()->json($e->getMessage(),HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+                return response()->json($e->getMessage(),HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
 
