@@ -35,6 +35,10 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->post('/championships/{championshipId}/teams', 'TeamController@store');
         $router->delete('/championships/{championshipId}/teams/{id}', 'TeamController@destroy');
 
+        $router->post('teams/{teamId}/competitors/{competitorId}/add', 'CompetitorTeamController@store');
+        $router->post('teams/{teamId}/competitors/{competitorId}/remove', 'CompetitorTeamController@destroy');
+        $router->post('teams/{team1Id}/{team2Id}/competitors/{competitorId}/move', 'CompetitorTeamController@update');
+
         $router->get('/tournaments/{slug}/fights', 'FightController@index');
 
         $router->get('/users', 'UserController@index');
