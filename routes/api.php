@@ -33,6 +33,7 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->get('/tournaments/{slug}/teams', 'TeamController@index');
         $router->post('/championships/{championshipId}/trees', 'TreeController@store');
         $router->post('/championships/{championshipId}/teams', 'TeamController@store');
+        $router->delete('/championships/{championshipId}/teams/{id}', 'TeamController@destroy');
 
         $router->get('/tournaments/{slug}/fights', 'FightController@index');
 

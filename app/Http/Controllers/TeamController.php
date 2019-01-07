@@ -81,6 +81,22 @@ class TeamController extends Controller
         }
     }
 
+    /**
+     * Delete a Team
+     *
+     * @param Request $request
+     * @param $championshipId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, $championshipId, $teamId)
+    {
+        try {
+            return response()->json(Team::destroy($teamId), HttpResponse::HTTP_OK);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), $e->getCode());
+        }
+    }
+
     //TODO Should go in the championship model
 
     /**
