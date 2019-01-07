@@ -1,6 +1,7 @@
 <?php
 
 $router->post('/auth/login', 'Auth\AuthController@authenticate');
+$router->post('/auth/socialLogin', 'Auth\AuthController@socialLogin');
 $router->post('/register', 'Auth\RegisterController@register');
 $router->get('register/confirm/{token}', 'Auth\RegisterController@confirm');
 
@@ -29,7 +30,9 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->put('/championships/{championshipId}/settings/{id}', 'ChampionshipSettingsController@update');
 
         $router->get('/tournaments/{slug}/trees', 'TreeController@index');
+        $router->get('/tournaments/{slug}/teams', 'TeamController@index');
         $router->post('/championships/{championshipId}/trees', 'TreeController@store');
+        $router->post('/championships/{championshipId}/teams', 'TeamController@store');
 
         $router->get('/tournaments/{slug}/fights', 'FightController@index');
 

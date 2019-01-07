@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
@@ -30,26 +31,6 @@ class AuthController
         $this->request = $request;
     }
 
-//    /**
-//     * Create a new token.
-//     *
-//     * @param  \App\User $user
-//     * @return string
-//     */
-//    protected function jwt(User $user)
-//    {
-//        $payload = [
-//            'iss' => "lumen-jwt", // Issuer of the token
-//            'sub' => $user, // Subject of the token
-//            'iat' => time(), // Time when JWT was issued.
-//            'exp' => time() + 60 * 60 // Expiration time
-//        ];
-//
-//        // As you can see we are passing `JWT_SECRET` as the second parameter that will
-//        // be used to decode the token in the future.
-//        return JWT::encode($payload, env('JWT_SECRET'));
-//    }
-
     /**
      * Authenticate a user and return the token if the provided credentials are correct.
      *
@@ -70,6 +51,24 @@ class AuthController
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json('login.invalid_credentials', HttpResponse::HTTP_UNAUTHORIZED);
         }
-        return response()->json(compact('token','user'), HttpResponse::HTTP_ACCEPTED);
+        return response()->json(compact('token', 'user'), HttpResponse::HTTP_ACCEPTED);
+    }
+
+    public function socialLogin(Request $request, Response $response)
+    {
+        $email = $request->email;
+        $user = User::firstOrNew(['email' => $email]);
+        if (!$user->exists) {
+            $user->name = $request->name;
+            $user->avatar = $request->avatar;
+            $user->provider = $request->provider;
+            $user->token = $request->token;
+            $user->save();
+        }
+
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json([ 'user' => $user, 'token' => $token ]);
+
     }
 }
