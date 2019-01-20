@@ -10,21 +10,21 @@ class CategoryController extends Controller
 {
 
 //    /**
-//     * Show the form for creating a new resource.
+//     * Get the first 10 categories
 //     *
 //     * @return array
 //     */
     public function index()
     {
-        // returns array with ikf, ekf, clak
         return response()->json(
-            Category::take(10)->orderBy('id', 'asc')->select('id', 'name')->get(), HttpResponse::HTTP_OK
+            Category::take(10)->orderBy('id', 'asc')->select('id', 'name')->get(),
+            HttpResponse::HTTP_OK
         );
     }
 
 
     /**
-     * Show the form for creating a new resource.
+     * Create new Category
      *
      * @param Request $request
      * @return \Illuminate\Database\Eloquent\Model
