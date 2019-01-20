@@ -14,7 +14,7 @@ class ChampionshipSettingsController extends Controller
     protected $defaultSettings;
 
     /**
-     * Store a newly created resource in storage.
+     * Store a championship setting.
      *
      * @param  \Illuminate\Http\Request $request
      * @param $championshipId
@@ -33,7 +33,7 @@ class ChampionshipSettingsController extends Controller
 
 
     /**
-     * Update the specified resource in storage.
+     * Update championship setting.
      *
      * @param  \Illuminate\Http\Request $request
      * @param $championshipId

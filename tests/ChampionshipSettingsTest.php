@@ -16,7 +16,7 @@ use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 class ChampionshipSettingsTest extends TestCase
 {
 
-    use DatabaseMigrations, AttachJwtToken;
+    use DatabaseTransactions, AttachJwtToken;
     protected $user;
 
     /** @test */
