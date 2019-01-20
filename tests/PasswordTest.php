@@ -1,11 +1,12 @@
 <?php
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class PasswordTest extends TestCase
 {
 
-    use DatabaseMigrations;
+    use DatabaseTransactions;
 
 
     /** @test */

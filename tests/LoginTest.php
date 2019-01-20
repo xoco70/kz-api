@@ -2,12 +2,13 @@
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Illuminate\Http\Response as HttpResponse;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginTest extends TestCase
 {
 
-    use DatabaseMigrations;
+    use DatabaseTransactions;
     protected $initialTournamentNum = 6;
     protected $defaultPagintation = 25;
 

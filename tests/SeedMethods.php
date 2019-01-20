@@ -8,7 +8,6 @@ trait SeedMethods
     protected function createSuperUser()
     {
         return factory(App\User::class)->create([
-            'email' => 'superuser@kendozone.dev',
             'password' => app('hash')->make('superuser'),
             'role_id' => Config::get('constants.ROLE_SUPERADMIN')
         ]);

@@ -6,16 +6,15 @@ use App\Tournament;
 use App\User;
 use App\Venue;
 use Illuminate\Http\Response;
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 use Illuminate\Http\Response as HttpResponse;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 
 class TournamentsTest extends TestCase
 {
 
-    use DatabaseMigrations, AttachJwtToken;
+    use DatabaseTransactions, AttachJwtToken;
     protected $initialTournamentNum = 6;
     protected $defaultPagintation = 25;
     protected $user;
