@@ -29,7 +29,9 @@
     "tymon/jwt-auth": "^1.0.0-rc.2",
     "urameshibr/lumen-form-request": "^1.4",
     "vlucas/phpdotenv": "~2.2",
-    "xoco70/laravel-tournaments": "dev-master"
+    "xoco70/laravel-tournaments": "dev-master",
+    "ext-json": "*",
+    "ext-http": "*"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.1",
