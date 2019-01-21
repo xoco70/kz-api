@@ -8,7 +8,7 @@ php:
 
 before_script:
   - cp .env.travis .env
-  - pecl install pecl_http
+  - echo "\n\n\n\n\n\n\n\n\n" | pecl install pecl_http
   - composer self-update
   - composer install --no-interaction
   - touch database/sqlite.db
