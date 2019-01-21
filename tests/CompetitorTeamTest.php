@@ -1,14 +1,15 @@
 <?php
 
-use App\Championship;
 use App\Competitor;
+use App\Team;
 use App\Tournament;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
+use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
+use Illuminate\Http\Response as HttpResponse;
 
 /**
  * List of User Test
@@ -39,7 +40,22 @@ class CompetitorTeamTest extends TestCase
     /** @test */
     public function it_add_competitor_to_team()
     {
+        // Create a championship that goes with teams
+        $tournament = Tournament::first();
+        $championship = $tournament->championships->get(0);
+        $setting = new ChampionshipSettings(['isTeam' => 1]);
+        $championship->settings = $setting;
+        $competitor = factory(Competitor::class)->create(['championship_id' => $championship->id]);
+        $team = new Team;
+        $team->name = "myTeam";
+        $team->championship_id = $championship;
+        $team->save();
+        // Assign competitor to team
+//        $teamId, $competitorId
 
+        $this->json('POST', '/teams/' . $team->id . '/competitors/' . $competitor->id . '/add')
+            ->assertResponseOk();
+        $this->seeInDatabase('competitor_team', ['team_id' => $team->id, 'competitor_id' => $competitor->id]);
     }
 
     /** @test */

@@ -11,7 +11,7 @@ $factory->define(Competitor::class, function (Faker\Generator $faker) {
 
     return [
         'championship_id' => $championshipId,
-        'user_id' => $faker->randomElement($users),
+        'user_id' => factory(User::class)->create(),
         'confirmed' => $faker->numberBetween(0, 1),
 //        'short_id' =>
     ];
