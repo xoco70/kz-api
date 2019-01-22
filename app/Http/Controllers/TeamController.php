@@ -47,7 +47,7 @@ class TeamController extends Controller
             }
 
             return [
-                'championship' => $championship->id,
+                'championship' => $championship->id, // TODO ???
                 'competitors' => $competitors,
                 'assignedCompetitors' => $assignedCompetitors,
                 'freeCompetitors' => $freeCompetitors,
