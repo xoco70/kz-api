@@ -75,7 +75,7 @@ class CompetitorTeamTest extends TestCase
         $this->team2->name = "myOtherTeam";
         $this->team2->championship_id = $this->championship;
         $this->team2->save();
-        
+
         $this->it_add_competitor_to_team();
         // move
         $this->json('POST', '/teams/' . $this->team1->id . '/' . $this->team2->id . '/competitors/' . $this->competitor->id . '/move')
