@@ -42,8 +42,7 @@ class CompetitorTeamTest extends TestCase
         $setting = new ChampionshipSettings(['isTeam' => 1]);
         $this->championship->settings = $setting;
         $this->competitor = factory(Competitor::class)->create(['championship_id' => $this->championship->id]);
-        $this->team1 = new Team;
-        $this->team1->name = "myTeam";
+        $this->team1 = factory(Team::class)->make(['championship_id' => $this->championship]);
         $this->team1->championship_id = $this->championship;
         $this->team1->save();
     }
