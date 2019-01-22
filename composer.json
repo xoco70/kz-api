@@ -31,7 +31,8 @@
     "vlucas/phpdotenv": "~2.2",
     "xoco70/laravel-tournaments": "dev-master",
     "ext-json": "*",
-    "ext-http": "*"
+    "ext-http": "*",
+    "ext-pdo": "*"
   },
   "require-dev": {
     "barryvdh/laravel-debugbar": "^3.1",
