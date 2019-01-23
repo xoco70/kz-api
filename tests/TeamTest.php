@@ -38,6 +38,7 @@ class TeamTest extends TestCase
         Auth::login($this->root);
         // Create a championship that goes with teams
         $this->tournament = Tournament::first();
+        dd($this->tournament->toArray(), $this->tournament->championships->toArray());
         $this->championship = $this->tournament->championships->get(2); // Championship that has Teams ( id = 7 )
     }
 
