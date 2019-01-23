@@ -11,7 +11,6 @@ before_script:
   - echo "\n\n\n\n\n\n\n\n\n" | pecl install pecl_http
   - composer self-update
   - composer install --no-interaction
-  - php artisan migrate --seed --database=sqlite
   - php artisan jwt:secret
 
 script:
