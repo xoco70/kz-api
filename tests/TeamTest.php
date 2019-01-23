@@ -65,6 +65,14 @@ class TeamTest extends TestCase
         $this->assertEquals(count($tournament['championships'][0]['competitors']), count($this->championship->competitors));
         $this->assertEquals(count($tournament['championships'][0]['teams']), count($this->championship->teams));
         $this->assertEquals($tournament['championships'][0]['category']['isTeam'], 1);
+    }
 
+    /** @test */
+    public function it_stores_a_team()
+    {
+        $team = factory(Team::class)->make(['championship_id' => $this->championship]);
+        // get championship with
+        $this->json('POST', '/teams', $team->toArray());
+        $this->seeInDatabase('team', $team->toArray());
     }
 }

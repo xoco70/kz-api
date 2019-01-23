@@ -14,7 +14,7 @@ class LoginTest extends TestCase
 
 
     /** @test */
-    public function cant_access_route_without_token() // TODO Doesn't pass with codeship --> error 500
+    public function cant_access_route_without_token()
     {
         $response = $this->call('GET', '/tournaments');
         // I should be blocked
