@@ -3,11 +3,11 @@
 $router->post('/auth/login', 'Auth\AuthController@authenticate');
 $router->post('/auth/socialLogin', 'Auth\AuthController@socialLogin');
 $router->post('/register', 'Auth\RegisterController@register');
-$router->get('register/confirm/{token}', 'Auth\RegisterController@confirm');
+$router->get('/register/confirm/{token}', 'Auth\RegisterController@confirm');
 
 
-$router->post('password/email', 'Auth\PasswordController@forgot');
-$router->post('password/reset', 'Auth\PasswordController@reset');
+$router->post('/password/email', 'Auth\PasswordController@forgot');
+$router->post('/password/reset', 'Auth\PasswordController@reset');
 
 $router->group(['middleware' => 'jwt.auth'],
     function () use ($router) {
@@ -32,12 +32,12 @@ $router->group(['middleware' => 'jwt.auth'],
         $router->get('/tournaments/{slug}/trees', 'TreeController@index');
         $router->get('/tournaments/{slug}/teams', 'TeamController@index');
         $router->post('/championships/{championshipId}/trees', 'TreeController@store');
-        $router->post('/championships/{championshipId}/teams', 'TeamController@store');
-        $router->delete('/championships/{championshipId}/teams/{id}', 'TeamController@destroy');
+        $router->post('/teams', 'TeamController@store');
+        $router->delete('/teams/{id}', 'TeamController@destroy');
 
-        $router->post('teams/{teamId}/competitors/{competitorId}/add', 'CompetitorTeamController@store');
-        $router->post('teams/{teamId}/competitors/{competitorId}/remove', 'CompetitorTeamController@destroy');
-        $router->post('teams/{team1Id}/{team2Id}/competitors/{competitorId}/move', 'CompetitorTeamController@update');
+        $router->post('/teams/{teamId}/competitors/{competitorId}/add', 'CompetitorTeamController@store');
+        $router->post('/teams/{teamId}/competitors/{competitorId}/remove', 'CompetitorTeamController@destroy');
+        $router->post('/teams/{team1Id}/{team2Id}/competitors/{competitorId}/move', 'CompetitorTeamController@update');
 
         $router->get('/tournaments/{slug}/fights', 'FightController@index');
 
