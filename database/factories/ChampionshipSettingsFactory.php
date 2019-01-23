@@ -25,6 +25,5 @@ $factory->define(ChampionshipSettings::class, function (Faker\Generator $faker) 
         'hanteiLimit' => $faker->numberBetween(0, 10), // 1/2 Finals
         'enchoGoldPoint' => $faker->numberBetween(0, 10), // Step where Encho has no more time limit
         'limitByEntity' => $faker->numberBetween(0, 10),
-
     ];
 });

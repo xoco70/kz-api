@@ -36,15 +36,9 @@ class ChampionshipSettingsTest extends TestCase
         $tournament = factory(Tournament::class)->create();
         $championship = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 2]);
         $setting = factory(ChampionshipSettings::class)->create(['championship_id' => $championship->id]);
-        $setting->fightingAreas=2;
-        $setting->treeType=1;
-        $setting->hasPreliminary=1;
-        $setting->preliminaryGroupSize=4;
-        $setting->preliminaryWinner=2;
-        $setting->fightDuration=2;
-        $setting->cost=100;
         $this->call('PUT', '/championships/' . $championship->id . '/settings/' . $setting->id, $setting->toArray());
         $this->assertResponseOk();
+        unset($setting->updated_at);
         $this->seeInDatabase('championship_settings', $setting->toArray());
     }
 }
