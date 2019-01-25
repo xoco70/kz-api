@@ -73,6 +73,20 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->make(['championship_id' => $this->championship]);
         // get championship with
         $this->json('POST', '/teams', $team->toArray());
+        $this->assertHasJson($team->toArray());
         $this->seeInDatabase('team', $team->toArray());
+
     }
+
+    /** @test */
+    public function it_delete_a_team()
+    {
+        $team = factory(Team::class)->create(['championship_id' => $this->championship]);
+        $this->seeInDatabase('team', $team->toArray());
+        // get championship with
+        $this->json('DELETE', '/teams/' . $team->id);
+        $this->assertEquals($this->response->content(), 1);
+        $this->missingFromDatabase('team', $team->toArray());
+    }
+
 }

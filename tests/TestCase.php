@@ -173,4 +173,9 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 
         return $this;
     }
+
+    public function assertHasJson(array $data)
+    {
+        $this->assertArraySubset($data, json_decode($this->response->content(), true));
+    }
 }
