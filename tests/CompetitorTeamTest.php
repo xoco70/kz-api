@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
-use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Http\Response;
 
 /**
  * List of User Test
@@ -52,7 +52,6 @@ class CompetitorTeamTest extends TestCase
     {
 
         // Assign competitor to team
-//        $teamId, $competitorId
 
         $this->json('POST', '/teams/' . $this->team1->id . '/competitors/' . $this->competitor->id . '/add')
             ->assertResponseOk();

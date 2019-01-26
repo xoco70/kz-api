@@ -4,9 +4,9 @@ use App\Championship;
 use App\Competitor;
 use App\Tournament;
 use App\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
 
@@ -36,7 +36,15 @@ class CompetitorTest extends TestCase
 
         Auth::login($this->root);
     }
+    /** @test */
+    public function it_get_competitors_data()
+    {
+        $tournament = factory(Tournament::class)->create(['user_id' => $this->root->id]);
+        factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]);
+        $this->json('GET', '/tournaments/' . $tournament->slug . '/competitors');
+        $this->assertHasJson($tournament->competitors->toArray());
 
+    }
     /** @test */
     public function it_add_a_user_to_championship()
     {
@@ -68,6 +76,21 @@ class CompetitorTest extends TestCase
         $this->notSeeInDatabase('competitor', ['championship_id' => $championship->id, 'user_id' => $user->id]);
     }
 
+
+
+    /** @test */
+    public function it_add_competitor_and_get_error()
+    {
+        $tournament = factory(Tournament::class)->create(['user_id' => $this->root->id]);
+        $championship = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 2]);
+        factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]);
+
+        $existingUser = factory(User::class)->create();
+        $this->call('POST', '/championships/' . $championship->id . '/competitors/',
+            ['competitors' => $existingUser]); // BAD PARAM INPUT
+        $this->assertResponseStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+
+    }
 //
 //    /** @test */
 //    public function a_competitor_always_has_the_same_short_id_in_a_tournament()

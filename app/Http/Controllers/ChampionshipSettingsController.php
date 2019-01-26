@@ -42,18 +42,14 @@ class ChampionshipSettingsController extends Controller
      */
     public function update(Request $request, $championshipId, $championshipSettingsId)
     {
-        try {
-            $setting = ChampionshipSettings::findOrFail($championshipSettingsId)->fill($request->all());
+        $setting = ChampionshipSettings::findOrFail($championshipSettingsId)->fill($request->all());
 
-            // If we changed one of those data, remove tree
-            if ($setting->isDirty('hasPreliminary') || $setting->isDirty('hasPreliminary') || $setting->isDirty('treeType')) {
-                FightersGroup::where('championship_id', $championshipId)->delete();
-            }
-            $setting->save();
-            return response()->json($setting, HttpResponse::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json(['msg' => $e->getMessage()], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+        // If we changed one of those data, remove tree
+        if ($setting->isDirty('hasPreliminary') || $setting->isDirty('hasPreliminary') || $setting->isDirty('treeType')) {
+            FightersGroup::where('championship_id', $championshipId)->delete();
         }
+        $setting->save();
+        return response()->json($setting, HttpResponse::HTTP_OK);
     }
 
 }

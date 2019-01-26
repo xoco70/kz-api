@@ -24,9 +24,27 @@ class TournamentsTest extends TestCase
     public function user_can_see_tournament_list()
     {
         $response = $this->call('GET', '/tournaments');
+        $this->assertResponseOk();
         $this->assertEquals(HttpResponse::HTTP_OK, $response->status());
     }
 
+//    /** @test */
+//    public function it_retrieves_data_to_display_edit_page()
+//    {
+//        $tournament = factory(Tournament::class)->create();
+//        unset($tournament->created_at, $tournament->updated_at, $tournament->sport);
+//        factory(Championship::class)->create([
+//            'tournament_id' => $tournament->id
+//        ]);
+//        $this->json('GET', '/tournaments/' . $tournament->slug . '/edit');
+//        $this->assertResponseOk();
+//        $result = json_decode($this->response->content(), true);
+//        $tournamentResponse = $result['tournament'];
+//        $categoriesResponse = $result['categories'];
+//        $this->assertContains($tournamentResponse, $tournament->toArray());
+//        $this->assertArrayHasKey( 'id', $categoriesResponse);
+//
+//    }
 //    /** @test */
 //    public function tournament_index_pagination_metadata() // TODO Pagination is still not ready
 //    {
@@ -163,13 +181,13 @@ class TournamentsTest extends TestCase
         $tournament = factory(Tournament::class)->create();
         $response = $this->call('PUT', '/tournaments/' . $tournament->slug,
             ['categoriesSelected' => $categories, 'tab' => 'categories']);
-        $this->assertEquals($response->getStatusCode(),HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertEquals($response->getStatusCode(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /** @test */
     public function update_categories_in_tournament()
     {
-        $categories = [1,3,7];
+        $categories = [1, 3, 7];
         $tournament = factory(Tournament::class)->create();
         $response = $this->call('PUT', '/tournaments/' . $tournament->slug,
             ['categoriesSelected' => $categories, 'tab' => 'categories']);

@@ -41,8 +41,8 @@ class CompetitorController extends Controller
      */
     public function index($slug)
     {
-        $tournament = Tournament::where('slug',$slug)->first();
-        $tournament = Tournament::with('championships.users', 'championships.competitors.user','championships.teams', 'championships.category')->find($tournament->id);
+        $tournament = Tournament::where('slug', $slug)->first();
+        $tournament = Tournament::with('championships.users', 'championships.competitors.user', 'championships.teams', 'championships.category')->find($tournament->id);
         return response()->json($tournament, HttpResponse::HTTP_OK);
     }
 
@@ -98,9 +98,13 @@ class CompetitorController extends Controller
                 }
             }
             return response()->json($championship->competitors()->with('user')->get(), HttpResponse::HTTP_CREATED);
-        } catch (ValidationException $e) {
-            return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
-        } catch (\Exception $e) {
+        }
+            // Could catch 404 error
+
+//        catch (ValidationException $e) {
+//            return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+//        }
+        catch (\Exception $e) {
             return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -115,12 +119,7 @@ class CompetitorController extends Controller
      */
     public function destroy($tournamentSlug, $competitorId)
     {
-        try {
-            Competitor::destroy($competitorId);
-            return response()->json('msg.user_delete_successful', HttpResponse::HTTP_OK);
-        } catch (\Exception $e) {
-            //TODO May not work, and return a big HTML
-            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        Competitor::destroy($competitorId);
+        return response()->json('msg.user_delete_successful', HttpResponse::HTTP_OK);
     }
 }

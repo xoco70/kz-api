@@ -25,4 +25,8 @@
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="DB_CONNECTION" value="sqlite"/>
     </php>
+    <!--<logging>-->
+        <!--<log type="coverage-html" target="./report"-->
+             <!--lowUpperBound="50" highLowerBound="80" />-->
+    <!--</logging>-->
 </phpunit>

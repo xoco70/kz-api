@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Contracts\Notifications\Dispatcher as NotificationDispatcher;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
@@ -177,5 +179,50 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
     public function assertHasJson(array $data)
     {
         $this->assertArraySubset($data, json_decode($this->response->content(), true));
+    }
+
+    /**
+     * Assert that the response contains the given JSON fragment.
+     *
+     * @param  array $data
+     * @return $this
+     */
+    public function assertJsonFragment(array $data, $content)
+    {
+        $actual = json_encode(Arr::sortRecursive(
+            (array)json_decode($this->response->content(), true)
+        ));
+
+        foreach (Arr::sortRecursive($data) as $key => $value) {
+            $expected = $this->jsonSearchStrings($key, $value);
+
+            $this->assertTrue(
+                Str::contains($actual, $expected),
+                'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL .
+                '[' . json_encode([$key => $value]) . ']' . PHP_EOL . PHP_EOL .
+                'within' . PHP_EOL . PHP_EOL .
+                "[{$actual}]."
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the strings we need to search for when examining the JSON.
+     *
+     * @param  string $key
+     * @param  string $value
+     * @return array
+     */
+    protected function jsonSearchStrings($key, $value)
+    {
+        $needle = substr(json_encode([$key => $value]), 1, -1);
+
+        return [
+            $needle . ']',
+            $needle . '}',
+            $needle . ',',
+        ];
     }
 }

@@ -10,6 +10,7 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
 use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Http\Response;
 
 /**
  * List of User Test
@@ -54,6 +55,7 @@ class TeamTest extends TestCase
 
         // get the data to build team screen
         $this->json('GET', '/tournaments/' . $this->tournament->slug . '/teams');
+        $this->assertResponseOk();
         $result = json_decode($this->response->content(), true);
         $tournament = $result['tournament'];
         $championships = $result['championships'];
@@ -73,6 +75,7 @@ class TeamTest extends TestCase
         $team = factory(Team::class)->make(['championship_id' => $this->championship]);
         // get championship with
         $this->json('POST', '/teams', $team->toArray());
+        $this->assertResponseStatus(Response::HTTP_CREATED);
         $this->assertHasJson($team->toArray());
         $this->seeInDatabase('team', $team->toArray());
 
@@ -85,6 +88,7 @@ class TeamTest extends TestCase
         $this->seeInDatabase('team', $team->toArray());
         // get championship with
         $this->json('DELETE', '/teams/' . $team->id);
+        $this->assertResponseOk();
         $this->assertEquals($this->response->content(), 1);
         $this->missingFromDatabase('team', $team->toArray());
     }
