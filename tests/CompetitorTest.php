@@ -72,7 +72,7 @@ class CompetitorTest extends TestCase
         $user = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_USER')]);
         $competitor = factory(Competitor::class)->create(['championship_id' => $championship->id, 'user_id' => $user->id]);
         $this->seeInDatabase('competitor', $competitor->toArray());
-        $this->call('DELETE', '/tournaments/' . $tournament->slug . '/competitors/' . $competitor->id);
+        $this->call('DELETE', '/competitors/' . $competitor->id);
         $this->notSeeInDatabase('competitor', ['championship_id' => $championship->id, 'user_id' => $user->id]);
     }
 

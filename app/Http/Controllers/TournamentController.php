@@ -8,6 +8,7 @@ use App\Http\Resources\TournamentResource;
 use App\Tournament;
 use App\Venue;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -55,7 +56,7 @@ class TournamentController extends Controller
     public function edit($slug)
     {
         try {
-            $tournament = Tournament::where('slug', $slug)->first();
+            $tournament = Tournament::where('slug', $slug)->firstOrFail();
             $selectedCategories = $tournament->categories()->select('category.id', 'name')->get(); // 3,4 ,240
             $defaultCategories = Category::take(7)->select('id', 'name')->get()->sortBy('id'); // 1 2 3 4 5 6 7
             $categories = $selectedCategories->merge($defaultCategories)->toArray();
@@ -65,6 +66,8 @@ class TournamentController extends Controller
                 ->where('slug', $slug)->first();
 
             return response()->json(['tournament' => $tournament, 'categories' => $categories], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json($e->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -73,7 +76,6 @@ class TournamentController extends Controller
     /**
      * Store a new Tournament
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      * @internal param TournamentRequest $form
      */
@@ -119,7 +121,7 @@ class TournamentController extends Controller
     {
         $tab = $this->request->input('tab');
         try {
-            $tournament = Tournament::where('slug', $slug)->first();
+            $tournament = Tournament::where('slug', $slug)->firstOrFail();
 
             if ($tab == 'general') {
                 $this->validate($this->request, [
@@ -163,15 +165,19 @@ class TournamentController extends Controller
                 $this->validate($this->request, [
                     'categoriesSelected' => 'required|array|min:1',
                 ]);
+
                 $categories = $this->request->categoriesSelected;
                 $tournament->categories()->sync($categories);
                 return $tournament->where('slug', $slug)->with('championships.category')->first();
             }
-            return response()->json($tournament->save(), HttpResponse::HTTP_OK);
+            $tournament->save();
+            return response()->json(null, HttpResponse::HTTP_OK);
         } catch (ValidationException $e) {
-            return response()->json($e->getMessage(), HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json($e->getMessage(), $e->status);
+        } catch (ModelNotFoundException $e) {
+            return response()->json($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
-            return response()->json($e->getMessage(), HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json($e->getMessage(), $e->getCode());
         }
     }
 
@@ -184,9 +190,11 @@ class TournamentController extends Controller
     public function destroy($slug)
     {
         try {
-            $tournament = Tournament::where('slug', $slug)->first();
+            $tournament = Tournament::where('slug', $slug)->firstOrFail();
             if (!$tournament) return response()->json('tournaments.wrong_tournament', HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
             return response()->json($tournament->delete(), HttpResponse::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json($e->getMessage(), $e->getCode());
         } catch (Exception $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Category;
+use App\Championship;
 use App\Competitor;
 use App\Team;
 use App\Tournament;
@@ -39,7 +41,11 @@ class TeamTest extends TestCase
         Auth::login($this->root);
         // Create a championship that goes with teams
         $this->tournament = Tournament::first();
-        $this->championship = $this->tournament->championships->get(2); // Championship that has Teams ( id = 7 )
+        $category = factory(Category::class)->create(['isTeam' => 1]);
+        $this->championship = factory(Championship::class)
+            ->create([
+                'tournament_id' => $this->tournament->id,
+                'category_id' => $category->id]);
     }
 
     /** @test */
@@ -47,11 +53,14 @@ class TeamTest extends TestCase
     {
         // Create a random number of competitors between 5 and 10
         $teams = factory(Team::class, rand(1, 3))->create([
-            'championship_id' => $this->championship
+            'championship_id' => $this->championship->id
+        ]);
+        $competitors = factory(Competitor::class, 2)->create([
+            'championship_id' => $this->championship->id
         ]);
         // Assign 2 competitor to first team
-        $this->json('POST', '/teams/' . $teams->get(0)->id . '/competitors/' . $this->championship->competitors->get(0)->id . '/add');
-        $this->json('POST', '/teams/' . $teams->get(0)->id . '/competitors/' . $this->championship->competitors->get(1)->id . '/add');
+        $this->json('POST', '/teams/' . $teams->get(0)->id . '/competitors/' . $competitors->get(0)->id . '/add');
+        $this->json('POST', '/teams/' . $teams->get(0)->id . '/competitors/' . $competitors->get(1)->id . '/add');
 
         // get the data to build team screen
         $this->json('GET', '/tournaments/' . $this->tournament->slug . '/teams');
@@ -70,7 +79,7 @@ class TeamTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_a_team()
+    public function it_creates_a_team()
     {
         $team = factory(Team::class)->make(['championship_id' => $this->championship]);
         // get championship with
@@ -89,7 +98,7 @@ class TeamTest extends TestCase
         // get championship with
         $this->json('DELETE', '/teams/' . $team->id);
         $this->assertResponseOk();
-        $this->assertEquals($this->response->content(), 1);
+        $this->assertEquals($this->response->content(), "{}");
         $this->missingFromDatabase('team', $team->toArray());
     }
 

@@ -41,7 +41,7 @@ class CompetitorController extends Controller
      */
     public function index($slug)
     {
-        $tournament = Tournament::where('slug', $slug)->first();
+        $tournament = Tournament::where('slug', $slug)->firstOrFail();
         $tournament = Tournament::with('championships.users', 'championships.competitors.user', 'championships.teams', 'championships.category')->find($tournament->id);
         return response()->json($tournament, HttpResponse::HTTP_OK);
     }
@@ -112,14 +112,14 @@ class CompetitorController extends Controller
     }
 
     /**
-     * Remove the Competitor from storage.
+     * Remove the Competitor.
      *
-     * @param $slug
+     * @param $competitorId
      * @return JsonResponse
      */
-    public function destroy($tournamentSlug, $competitorId)
+    public function destroy($competitorId)
     {
         Competitor::destroy($competitorId);
-        return response()->json('msg.user_delete_successful', HttpResponse::HTTP_OK);
+        return response()->json(null, HttpResponse::HTTP_OK);
     }
 }

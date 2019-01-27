@@ -61,8 +61,10 @@ class CompetitorTeamTest extends TestCase
     /** @test */
     public function it_removes_competitor_from_team()
     {
-        $this->json('POST', '/teams/' . $this->team1->id . '/competitors/' . $this->competitor->id . '/remove')
-            ->assertResponseOk();
+        $this->it_add_competitor_to_team();
+        $this->json('POST', '/teams/' . $this->team1->id . '/competitors/' . $this->competitor->id . '/remove');
+        $this->assertResponseOk();
+        $this->assertEquals($this->response->content(), "{}");
         $this->missingFromDatabase('competitor_team', ['team_id' => $this->team1->id, 'competitor_id' => $this->competitor->id]);
     }
 

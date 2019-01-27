@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\User;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Intervention\Image\Exception\NotFoundException;
 use Intervention\Image\Facades\Image;
 
 
@@ -25,7 +24,7 @@ class UserController extends Controller
     public function edit($slug)
     {
         try {
-            return response()->json(User::where('slug', $slug)->first(), Response::HTTP_OK);
+            return response()->json(User::where('slug', $slug)->firstOrFail(), Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -80,10 +79,11 @@ class UserController extends Controller
             Storage::disk('s3')->put('avatar/' . $imgName, $resource);
             $user = User::where('slug', $slug)->firstOrFail();
             $user->update(['avatar' => $imgName]);
+
             return response()->json($imgName, Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        } catch (NotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json($e->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

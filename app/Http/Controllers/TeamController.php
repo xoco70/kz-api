@@ -89,7 +89,9 @@ class TeamController extends Controller
     public function destroy(Request $request, $teamId)
     {
         try {
-            return response()->json(Team::destroy($teamId), HttpResponse::HTTP_OK);
+            $response = response()->json(Team::destroy($teamId));
+            if ($response->content() == 1) return response()->json(null, HttpResponse::HTTP_OK);
+            return response()->json(null, HttpResponse::HTTP_CONFLICT);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), $e->getCode());
         }

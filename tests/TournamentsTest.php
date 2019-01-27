@@ -204,10 +204,11 @@ class TournamentsTest extends TestCase
         $this->loginAs($loggedUser);
         $tournament = factory(Tournament::class)->create(['user_id' => $loggedUser->id]);
         $championship = factory(Championship::class)->create(['tournament_id' => $tournament->id, 'category_id' => 1]);
-        $setting = factory(ChampionshipSettings::class)->create(['championship_id' => $championship->id]);
-        $competitor = factory(Competitor::class)->create(['championship_id' => $championship->id]);
+        factory(ChampionshipSettings::class)->create(['championship_id' => $championship->id]);
+        factory(Competitor::class)->create(['championship_id' => $championship->id]);
         $this->call('DELETE', '/tournaments/' . $tournament->slug);
         $this->assertResponseOk();
+        $this->assertTrue((boolean)$this->response->content());
         // TODO This is weird, why some use notSeeInDatabase, and some use seeIsSoftDeletedInDatabase
         // Tournament use soft delete
         // Championship use soft delete in the plugin
