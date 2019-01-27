@@ -6,13 +6,11 @@ use App\Competitor;
 use App\Team;
 use App\Tournament;
 use App\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\Concerns\AttachJwtToken;
-use Xoco70\LaravelTournaments\Models\ChampionshipSettings;
-use Illuminate\Http\Response as HttpResponse;
-use Illuminate\Http\Response;
 
 /**
  * List of User Test
@@ -31,7 +29,7 @@ class TeamTest extends TestCase
     use DatabaseTransactions, AttachJwtToken;
 
     protected $user, $users, $addUser, $editUser, $root, $simpleUser;
-    protected $tournament, $championship, $team1, $team2, $competitor;
+    protected $tournament, $championship, $team1, $team2, $competitors;
 
 
     public function setUp()
@@ -40,34 +38,38 @@ class TeamTest extends TestCase
         $this->root = factory(User::class)->create(['role_id' => Config::get('constants.ROLE_SUPERADMIN')]);
         Auth::login($this->root);
         // Create a championship that goes with teams
-        $this->tournament = Tournament::first();
+        $this->tournament = factory(Tournament::class)->create();
         $category = factory(Category::class)->create(['isTeam' => 1]);
         $this->championship = factory(Championship::class)
             ->create([
                 'tournament_id' => $this->tournament->id,
                 'category_id' => $category->id]);
+        $this->competitors = $competitors = factory(Competitor::class, 2)->create([
+            'championship_id' => $this->championship->id
+        ]);
     }
 
     /** @test */
-    public function it_retrieve_all_necessary_data()
+    public function it_retrieve_all_necessary_data_to_display_teams()
     {
         // Create a random number of competitors between 5 and 10
-        $teams = factory(Team::class, rand(1, 3))->create([
+        $team = factory(Team::class)->create([
             'championship_id' => $this->championship->id
         ]);
-        $competitors = factory(Competitor::class, 2)->create([
-            'championship_id' => $this->championship->id
-        ]);
-        // Assign 2 competitor to first team
-        $this->json('POST', '/teams/' . $teams->get(0)->id . '/competitors/' . $competitors->get(0)->id . '/add');
-        $this->json('POST', '/teams/' . $teams->get(0)->id . '/competitors/' . $competitors->get(1)->id . '/add');
 
+        // Assign 2 competitor to first team
+        $this->json('POST', '/teams/' . $team->id . '/competitors/' . $this->competitors->get(0)->id . '/add');
+        $this->assertResponseOk();
+        $this->json('POST', '/teams/' . $team->id . '/competitors/' . $this->competitors->get(1)->id . '/add');
+        $this->assertResponseOk();
         // get the data to build team screen
         $this->json('GET', '/tournaments/' . $this->tournament->slug . '/teams');
         $this->assertResponseOk();
         $result = json_decode($this->response->content(), true);
         $tournament = $result['tournament'];
         $championships = $result['championships'];
+//        dd($result['championships']);
+
         $this->assertEquals(count($championships[0]['assignedCompetitors']), 2);
         $this->assertEquals(count($championships[0]['freeCompetitors']), count($this->championship->competitors) - 2);
         $this->assertEquals(count($championships[0]['teams']), count($this->championship->teams));
